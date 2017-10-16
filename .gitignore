@@ -36,3 +36,5 @@
 .gitignore
 .idea/
 cmake-build-debug/
+
+libs/
