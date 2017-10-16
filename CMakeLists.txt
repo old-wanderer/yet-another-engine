@@ -11,12 +11,14 @@ else()
     message(WARNING "gleew not found")
 endif()
 
-
+# символьная ссылка на директорию с ресурсами, для билда надо будет заменить
+execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_SOURCE_DIR}/resource ${CMAKE_BINARY_DIR}/resource)
 
 include_directories(./include)
 include_directories(./libs/glfw/include)
+include_directories(./libs/glm)
 
-file(GLOB_RECURSE SOURCE_FILES src/*.cpp)
+file(GLOB_RECURSE SOURCE_FILES src/*.cpp include/*.h)
 
 add_executable(yet_another_engine ${SOURCE_FILES})
 
