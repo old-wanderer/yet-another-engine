@@ -9,40 +9,8 @@
 
 #include <iostream>
 #include <PrimitiveObject.h>
-
-#include <fstream>
-
-
-const std::string& read_file(const char* path)
-{
-    std::ifstream is(path);
-    const std::string data((std::istreambuf_iterator<char>(is)), std::istreambuf_iterator<char>());
-    is.close();
-
-    return data;
-}
-
-GLuint create_shader(GLenum type, const char* path)
-{
-    const GLchar* code = read_file(path).c_str();
-
-    GLuint guid = glCreateShader(type);
-    glShaderSource(guid, 1, &code, nullptr);
-    glCompileShader(guid);
-
-    GLint success;
-    GLchar infoLog[512];
-    glGetShaderiv(guid, GL_COMPILE_STATUS, &success);
-    if(!success)
-    {
-        glGetShaderInfoLog(guid, 512, nullptr, infoLog);
-        std::string msg = "ERROR::SHADER::COMPILATION_FAILED";
-        msg += infoLog;
-        throw std::runtime_error(msg);
-    }
-
-    return guid;
-}
+#include <ResourceStorage.h>
+#include <Shader.hpp>
 
 int main()
 {
@@ -73,14 +41,15 @@ int main()
 
     glGetError();
 
+    ResourceStorage<Shader> storage;
+    storage.emplace("s_vert", GL_VERTEX_SHADER,   "./resource/shader/vertex.glsl");
+    storage.emplace("s_frag", GL_FRAGMENT_SHADER, "./resource/shader/fragment.glsl");
+
     PrimitiveObject object;
 
-    GLuint vertex_shader = create_shader(GL_VERTEX_SHADER, "./resource/shader/vertex.glsl");
-    GLuint fragme_shader = create_shader(GL_FRAGMENT_SHADER, "./resource/shader/fragment.glsl");
-
     GLuint shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertex_shader);
-    glAttachShader(shaderProgram, fragme_shader);
+    glAttachShader(shaderProgram, storage.get("s_vert").guid());
+    glAttachShader(shaderProgram, storage.get("s_frag").guid());
     glLinkProgram(shaderProgram);
 
     glUseProgram(shaderProgram);
