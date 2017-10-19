@@ -10,7 +10,9 @@
 #include <iostream>
 #include <PrimitiveObject.h>
 #include <ResourceStorage.h>
-#include <Shader.hpp>
+#include <Shader.h>
+#include <Model.h>
+#include <ModelObject.h>
 
 int main()
 {
@@ -45,7 +47,11 @@ int main()
     storage.emplace("s_vert", GL_VERTEX_SHADER,   "./resource/shader/vertex.glsl");
     storage.emplace("s_frag", GL_FRAGMENT_SHADER, "./resource/shader/fragment.glsl");
 
+    ResourceStorage<Model> models;
+    models.emplace("ball", "./resource/model/ball.dae");
+
     PrimitiveObject object;
+    ModelObject model_object(models.get("ball"));
 
     GLuint shaderProgram = glCreateProgram();
     glAttachShader(shaderProgram, storage.get("s_vert").guid());
@@ -60,7 +66,7 @@ int main()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        object.draw();
+        model_object.draw();
 
         glfwSwapBuffers(window);
     }

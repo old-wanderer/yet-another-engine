@@ -6,12 +6,12 @@
 
 Resource::Resource(): _isLoaded(false), _guid(0) { }
 
-bool Resource::isLoaded()
+bool Resource::isLoaded() const
 {
     return this->_isLoaded;
 }
 
-GLuint Resource::guid()
+GLuint Resource::guid() const
 {
     return this->_guid;
 }

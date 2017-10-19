@@ -23,7 +23,7 @@ PrimitiveObject::PrimitiveObject(): AbstractObject()
     glBindVertexArray(0);
 }
 
-void PrimitiveObject::draw()
+void PrimitiveObject::draw() const
 {
     glBindVertexArray(this->_vao_guid);
     glDrawArrays(GL_TRIANGLES, 0, 3);

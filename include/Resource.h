@@ -17,8 +17,8 @@ public:
     virtual void load() = 0;
     virtual void unload() = 0;
 
-    bool isLoaded();
-    GLuint guid();
+    bool isLoaded() const;
+    GLuint guid() const;
 protected:
     bool _isLoaded;
     GLuint _guid;

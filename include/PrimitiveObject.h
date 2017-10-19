@@ -11,7 +11,7 @@ class PrimitiveObject: public AbstractObject
 {
 public:
     PrimitiveObject();
-    void draw();
+    void draw() const override;
 
 protected:
     GLuint _vbo_guid;

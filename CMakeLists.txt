@@ -17,9 +17,11 @@ execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_SOURCE_DIR}/r
 include_directories(./include)
 include_directories(./libs/glfw/include)
 include_directories(./libs/glm)
+find_library(RESULT assimp PATHS ./libs/assimp/lib)
 
 file(GLOB_RECURSE SOURCE_FILES src/*.cpp include/*.h)
 
 add_executable(yet_another_engine ${SOURCE_FILES})
 
 target_link_libraries(yet_another_engine glfw ${OPENGL_glu_LIBRARY} ${GLFW_LIBRARIES})
+target_link_libraries(yet_another_engine assimp)

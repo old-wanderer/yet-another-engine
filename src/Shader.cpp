@@ -3,7 +3,7 @@
 //
 
 #include <fstream>
-#include "Shader.hpp"
+#include "Shader.h"
 
 const std::string& read_file(const char* path)
 {

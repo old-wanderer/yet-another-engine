@@ -16,7 +16,7 @@ class AbstractObject
 public:
     AbstractObject();
     virtual ~AbstractObject();
-    virtual void draw() = 0;
+    virtual void draw() const = 0;
 
 protected:
     std::vector<glm::vec3> vertices;
