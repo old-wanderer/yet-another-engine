@@ -7,12 +7,24 @@
 #define GLFW_INCLUDE_GLCOREARB
 #include <GLFW/glfw3.h>
 
+#include <glm/gtc/type_ptr.hpp>
+
 #include <iostream>
 #include <PrimitiveObject.h>
 #include <ResourceStorage.h>
 #include <Shader.h>
 #include <Model.h>
 #include <ModelObject.h>
+#include <Camera.h>
+
+Camera camera;
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
+{
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, GL_TRUE);
+    camera.key_callback(window, key, scancode, action, mode);
+}
 
 int main()
 {
@@ -59,12 +71,20 @@ int main()
     glLinkProgram(shaderProgram);
 
     glUseProgram(shaderProgram);
+
+    GLint transformLoc = glGetUniformLocation(shaderProgram, "proj_view");
+
+    glfwSetKeyCallback(window, key_callback);
+
     while (!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+
+        glm::mat4 trans = camera.projection_view();
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
         model_object.draw();
 

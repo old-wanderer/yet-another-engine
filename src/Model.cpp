@@ -18,7 +18,7 @@ void Model::load()
     if (this->_isLoaded) return;
 
     Assimp::Importer importer; // TODO maybe can be static
-    // если использовать unique_ptr, то свалится с ошибкой. Надо разобраться
+    // NOTE: если использовать unique_ptr, то свалится с ошибкой. Надо разобраться
     // auto scene = std::unique_ptr<const aiScene>(importer.ReadFile(_path_to_source, aiProcess_Triangulate | aiProcess_FlipUVs));
     auto scene = importer.ReadFile(_path_to_source, aiProcess_Triangulate | aiProcess_FlipUVs);
 
@@ -27,15 +27,14 @@ void Model::load()
         throw 1;
     }
 
-    glm::mat4 transform = glm::scale(glm::mat4(1), glm::vec3(.5f));
+    // NOTE: количество вершин и индексов равно, чего быть не должно с ball.вфу
     for (unsigned int mesh_index = 0; mesh_index < 1; mesh_index++)
     {
         aiMesh *mesh = scene->mMeshes[mesh_index];
         for (unsigned int vert_index = 0; vert_index < mesh->mNumVertices; vert_index++)
         {
             aiVector3D vert = mesh->mVertices[vert_index];
-            glm::vec3 vertex = transform * glm::vec4(vert.x, vert.y, vert.z, 1.f);
-            _vertices.push_back(vertex);
+            _vertices.emplace_back(vert.x, vert.y, vert.z);
         }
         for (unsigned int face_index = 0; face_index < mesh->mNumFaces; face_index++)
         {
