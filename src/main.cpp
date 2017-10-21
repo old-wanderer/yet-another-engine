@@ -17,13 +17,16 @@
 #include <ModelObject.h>
 #include <Camera.h>
 
-Camera camera;
+bool press_keys[1024];
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GL_TRUE);
-    camera.key_callback(window, key, scancode, action, mode);
+    if (key >= 0 && key < 1024)
+    {
+        press_keys[key] = action != GLFW_RELEASE;
+    }
 }
 
 int main()
@@ -64,6 +67,7 @@ int main()
 
     PrimitiveObject object;
     ModelObject model_object(models.get("ball"));
+    Camera camera;
 
     GLuint shaderProgram = glCreateProgram();
     glAttachShader(shaderProgram, storage.get("s_vert").guid());
@@ -79,6 +83,7 @@ int main()
     while (!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
+        camera.key_callback(press_keys);
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);

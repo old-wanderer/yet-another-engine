@@ -2,38 +2,32 @@
 // Created by Андрей on 20.10.17.
 //
 
-#include <cstdio>
 #include "Camera.h"
 
-void Camera::key_callback(GLFWwindow *window, int key, int scancode, int action, int mode)
+Camera::Camera()
 {
-    if (action == GLFW_PRESS)
-    {
-        glm::vec3 direction;
-        GLfloat speed = 0.1f;
-
-        switch (key)
-        {
-            case GLFW_KEY_W: direction =  front; break;
-            case GLFW_KEY_S: direction = -front; break;
-            case GLFW_KEY_A: direction = glm::cross(up, front); break;
-            case GLFW_KEY_D: direction = glm::cross(front, up); break;
-            case GLFW_KEY_Q:
-                yaw -= 2.f;
-                front.x = cos(glm::radians(yaw));
-                front.z = sin(glm::radians(yaw));
-                return;
-            case GLFW_KEY_E:
-                yaw += 2.f;
-                front.x = cos(glm::radians(yaw));
-                front.z = sin(glm::radians(yaw));
-                return;
-            default: break;
-        }
-
-        position += speed * glm::normalize(direction);
-        printf("position: %.4f %.4f %.4f\n", position.x, position.y, position.z);
-    }
+    handlers.emplace_back(GLFW_KEY_W, [this] {
+        this->position += speed * front;
+    });
+    handlers.emplace_back(GLFW_KEY_S, [this] {
+        this->position -= speed * front;
+    });
+    handlers.emplace_back(GLFW_KEY_A, [this] {
+        this->position += speed * glm::normalize(glm::cross(up, front));
+    });
+    handlers.emplace_back(GLFW_KEY_D, [this] {
+        this->position += speed * glm::normalize(glm::cross(front, up));
+    });
+    handlers.emplace_back(GLFW_KEY_Q, [this] {
+        this->yaw -= 2.f;
+        this->front.x = cos(glm::radians(yaw));
+        this->front.z = sin(glm::radians(yaw));
+    });
+    handlers.emplace_back(GLFW_KEY_E, [this] {
+        this->yaw += 2.f;
+        this->front.x = cos(glm::radians(yaw));
+        this->front.z = sin(glm::radians(yaw));
+    });
 }
 
 const glm::mat4 Camera::projection_view() const
@@ -44,4 +38,15 @@ const glm::mat4 Camera::projection_view() const
     glm::mat4 projection = glm::perspective(45.0f, 1.f, 0.1f, 100.0f);
     glm::mat4 view = glm::lookAt(position, position + front, up);
     return projection * view;
+}
+
+void Camera::key_callback(const bool press_keys[1024])
+{
+    for (auto& pair: handlers)
+    {
+        if (press_keys[pair.first])
+        {
+            pair.second();
+        }
+    }
 }

@@ -9,13 +9,15 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <vector>
+#include <functional>
 
 class Camera
 {
 public:
-    Camera() = default;
+    Camera();
 
-    void key_callback(GLFWwindow*, int, int, int, int);
+    void key_callback(const bool[1024]);
 
     const glm::mat4 projection_view() const;
 protected:
@@ -24,6 +26,9 @@ protected:
     glm::vec3 up       = { 0.f, 1.f,  0.f};
 
     GLfloat yaw = -90.f;
+    GLfloat speed = 0.1f;
+
+    std::vector<std::pair<short, std::function<void()>>> handlers;
 };
 
 
