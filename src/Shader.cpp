@@ -3,12 +3,13 @@
 //
 
 #include <fstream>
+#include <iostream>
 #include "Shader.h"
 
-const std::string& read_file(const char* path)
+std::string read_file(const char* path)
 {
     std::ifstream is(path);
-    const std::string data((std::istreambuf_iterator<char>(is)), std::istreambuf_iterator<char>());
+    std::string data((std::istreambuf_iterator<char>(is)), std::istreambuf_iterator<char>());
     is.close();
 
     return data;
@@ -21,7 +22,10 @@ void Shader::load()
 {
     if (this->_isLoaded) return;
 
-    const GLchar* code = read_file(this->_path_to_source.c_str()).c_str();
+    std::ifstream is(_path_to_source);
+    std::string data((std::istreambuf_iterator<char>(is)), std::istreambuf_iterator<char>());
+    is.close();
+    const GLchar* code = data.c_str();
 
     this->_guid = glCreateShader(this->_type);
     glShaderSource(this->_guid, 1, &code, nullptr);

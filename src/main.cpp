@@ -62,6 +62,9 @@ int main()
     storage.emplace("s_vert", GL_VERTEX_SHADER,   "./resource/shader/vertex.glsl");
     storage.emplace("s_frag", GL_FRAGMENT_SHADER, "./resource/shader/fragment.glsl");
 
+    storage.emplace("color_vert", GL_VERTEX_SHADER,   "./resource/shader/color_in_vertex.glsl");
+    storage.emplace("color_frag", GL_FRAGMENT_SHADER, "./resource/shader/color_in_fragment.glsl");
+
     ResourceStorage<Model> models;
     models.emplace("ball", "./resource/model/ball.dae");
 
@@ -70,8 +73,8 @@ int main()
     Camera camera;
 
     GLuint shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, storage.get("s_vert").guid());
-    glAttachShader(shaderProgram, storage.get("s_frag").guid());
+    glAttachShader(shaderProgram, storage.get("color_vert").guid());
+    glAttachShader(shaderProgram, storage.get("color_frag").guid());
     glLinkProgram(shaderProgram);
 
     glUseProgram(shaderProgram);
@@ -91,7 +94,7 @@ int main()
         glm::mat4 trans = camera.projection_view();
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
-        model_object.draw();
+        object.draw();
 
         glfwSwapBuffers(window);
     }
