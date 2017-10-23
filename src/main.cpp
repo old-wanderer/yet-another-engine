@@ -16,6 +16,7 @@
 #include <Model.h>
 #include <ModelObject.h>
 #include <Camera.h>
+#include <ShaderProgram.h>
 
 bool press_keys[1024];
 
@@ -72,14 +73,9 @@ int main()
     ModelObject model_object(models.get("ball"));
     Camera camera;
 
-    GLuint shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, storage.get("color_vert").guid());
-    glAttachShader(shaderProgram, storage.get("color_frag").guid());
-    glLinkProgram(shaderProgram);
-
-    glUseProgram(shaderProgram);
-
-    GLint transformLoc = glGetUniformLocation(shaderProgram, "proj_view");
+    ShaderProgram shader_program(storage.get("color_vert"), storage.get("color_frag"));
+    shader_program.load();
+    shader_program.use();
 
     glfwSetKeyCallback(window, key_callback);
 
@@ -92,7 +88,7 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT);
 
         glm::mat4 trans = camera.projection_view();
-        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+        shader_program.set_uniform("proj_view", trans);
 
         object.draw();
 
