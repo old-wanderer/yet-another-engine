@@ -17,7 +17,7 @@ void ShaderProgram::use()
 void ShaderProgram::load()
 {
     this->_guid = glCreateProgram();
-    // TODO проверку на загруженность шейдеров, а лучше сделать через листнеров
+    // TODO проверку на загруженность шейдеров, а лучше сделать через листнеров или подстчет ипользования
     glAttachShader(this->_guid, vertex.guid());
     glAttachShader(this->_guid, fragment.guid());
     glLinkProgram(this->_guid);

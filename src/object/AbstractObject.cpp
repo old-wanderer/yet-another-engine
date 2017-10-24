@@ -4,7 +4,8 @@
 
 #include "AbstractObject.h"
 
-AbstractObject::AbstractObject(): _vao_guid(0) { }
+AbstractObject::AbstractObject(ShaderProgram& program):
+        program(program), _vao_guid(0) { }
 
 AbstractObject::~AbstractObject()
 {

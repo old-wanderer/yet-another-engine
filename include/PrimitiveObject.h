@@ -10,7 +10,7 @@
 class PrimitiveObject: public AbstractObject
 {
 public:
-    PrimitiveObject();
+    explicit PrimitiveObject(ShaderProgram&);
     void draw() const override;
 
 protected:

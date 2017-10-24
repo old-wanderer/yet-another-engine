@@ -5,6 +5,7 @@
 #ifndef YET_ANOTHER_ENGINE_SHADER_HPP
 #define YET_ANOTHER_ENGINE_SHADER_HPP
 
+#include <string>
 #include <GL/glew.h>
 #include "Resource.h"
 

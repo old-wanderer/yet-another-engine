@@ -12,7 +12,7 @@
 class ModelObject: public AbstractObject
 {
 public:
-    ModelObject(Model&);
+    ModelObject(ShaderProgram&, Model&);
     virtual ~ModelObject();
     void draw() const override;
 

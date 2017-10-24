@@ -69,13 +69,12 @@ int main()
     ResourceStorage<Model> models;
     models.emplace("ball", "./resource/model/ball.dae");
 
-    PrimitiveObject object;
-    ModelObject model_object(models.get("ball"));
-    Camera camera;
-
     ShaderProgram shader_program(storage.get("color_vert"), storage.get("color_frag"));
     shader_program.load();
-    shader_program.use();
+
+    PrimitiveObject object(shader_program);
+    ModelObject model_object(shader_program, models.get("ball"));
+    Camera camera;
 
     glfwSetKeyCallback(window, key_callback);
 

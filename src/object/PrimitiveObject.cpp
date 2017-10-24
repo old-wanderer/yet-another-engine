@@ -5,7 +5,7 @@
 #include <iostream>
 #include "PrimitiveObject.h"
 
-PrimitiveObject::PrimitiveObject(): AbstractObject()
+PrimitiveObject::PrimitiveObject(ShaderProgram& program): AbstractObject(program)
 {
     vertices.emplace_back(-0.5f, -0.5f, 0.0f);
     vertices.emplace_back( 1.0f,  0.0f, 0.0f);
@@ -34,6 +34,7 @@ PrimitiveObject::PrimitiveObject(): AbstractObject()
 
 void PrimitiveObject::draw() const
 {
+    this->program.use();
     glBindVertexArray(this->_vao_guid);
     glDrawArrays(GL_TRIANGLES, 0, 3);
     glBindVertexArray(0);
