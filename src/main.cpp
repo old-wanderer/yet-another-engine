@@ -69,7 +69,9 @@ int main()
     storage.emplace("color_frag", GL_FRAGMENT_SHADER, "./resource/shader/color_in_fragment.glsl");
 
     ResourceStorage<Model> models;
-    models.emplace("ball", "./resource/model/ball.dae");
+//    models.emplace("ball", "./resource/model/ball.dae");
+    models.emplace("ball", Model::from_file("./resource/model/ball.dae"));
+    models.emplace("rect", Model::from_rectangle(0, 0, glm::vec3(1)));
 
     ShaderProgram shader_program0(storage.get("s_vert"), storage.get("s_frag"));
     shader_program0.load();
@@ -78,6 +80,7 @@ int main()
 
     PrimitiveObject object(shader_program1);
     ModelObject model_object(shader_program0, models.get("ball"));
+    ModelObject rectangle(shader_program0, models.get("rect"));
     Camera camera;
 
     glfwSetKeyCallback(window, key_callback);
@@ -93,6 +96,7 @@ int main()
         glm::mat4 trans = camera.projection_view();
 
         object.draw(trans);
+        rectangle.draw(trans);
         model_object.draw(trans);
 
         glfwSwapBuffers(window);
