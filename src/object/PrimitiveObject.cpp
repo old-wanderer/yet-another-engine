@@ -32,9 +32,10 @@ PrimitiveObject::PrimitiveObject(ShaderProgram& program): AbstractObject(program
     glBindVertexArray(0);
 }
 
-void PrimitiveObject::draw() const
+void PrimitiveObject::draw(glm::mat4 proj_view) const
 {
     this->program.use();
+    this->program.set_uniform("proj_view", proj_view);
     glBindVertexArray(this->_vao_guid);
     glDrawArrays(GL_TRIANGLES, 0, 3);
     glBindVertexArray(0);

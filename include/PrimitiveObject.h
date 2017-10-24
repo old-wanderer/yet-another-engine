@@ -11,7 +11,7 @@ class PrimitiveObject: public AbstractObject
 {
 public:
     explicit PrimitiveObject(ShaderProgram&);
-    void draw() const override;
+    void draw(glm::mat4) const override;
 
 protected:
     GLuint _vbo_guid;

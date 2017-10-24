@@ -17,7 +17,7 @@ class AbstractObject
 public:
     explicit AbstractObject(ShaderProgram&);
     virtual ~AbstractObject();
-    virtual void draw() const = 0;
+    virtual void draw(glm::mat4) const = 0;
 
 protected:
     ShaderProgram& program;

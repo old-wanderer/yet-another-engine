@@ -69,11 +69,13 @@ int main()
     ResourceStorage<Model> models;
     models.emplace("ball", "./resource/model/ball.dae");
 
-    ShaderProgram shader_program(storage.get("color_vert"), storage.get("color_frag"));
-    shader_program.load();
+    ShaderProgram shader_program0(storage.get("s_vert"), storage.get("s_frag"));
+    shader_program0.load();
+    ShaderProgram shader_program1(storage.get("color_vert"), storage.get("color_frag"));
+    shader_program1.load();
 
-    PrimitiveObject object(shader_program);
-    ModelObject model_object(shader_program, models.get("ball"));
+    PrimitiveObject object(shader_program1);
+    ModelObject model_object(shader_program0, models.get("ball"));
     Camera camera;
 
     glfwSetKeyCallback(window, key_callback);
@@ -87,9 +89,9 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT);
 
         glm::mat4 trans = camera.projection_view();
-        shader_program.set_uniform("proj_view", trans);
 
-        object.draw();
+        object.draw(trans);
+        model_object.draw(trans);
 
         glfwSwapBuffers(window);
     }

@@ -14,7 +14,7 @@ class ModelObject: public AbstractObject
 public:
     ModelObject(ShaderProgram&, Model&);
     virtual ~ModelObject();
-    void draw() const override;
+    void draw(glm::mat4) const override;
 
 protected:
     Model& model;
