@@ -59,6 +59,8 @@ int main()
 
     glGetError();
 
+    glEnable(GL_DEPTH_TEST);
+
     ResourceStorage<Shader> storage;
     storage.emplace("s_vert", GL_VERTEX_SHADER,   "./resource/shader/vertex.glsl");
     storage.emplace("s_frag", GL_FRAGMENT_SHADER, "./resource/shader/fragment.glsl");
@@ -86,7 +88,7 @@ int main()
         camera.key_callback(press_keys);
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glm::mat4 trans = camera.projection_view();
 
