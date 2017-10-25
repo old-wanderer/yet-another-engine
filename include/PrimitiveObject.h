@@ -10,11 +10,11 @@
 class PrimitiveObject: public AbstractObject
 {
 public:
-    explicit PrimitiveObject(ShaderProgram&);
+    explicit PrimitiveObject(ShaderProgram&, glm::mat4&& = glm::mat4(1));
     void draw(glm::mat4) const override;
 
 protected:
-    GLuint _vbo_guid;
+    GLuint _vbo_guid; // TODO убрать, должно быть в Model
 };
 
 

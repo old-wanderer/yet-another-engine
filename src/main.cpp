@@ -65,8 +65,8 @@ int main()
     storage.emplace("s_vert", GL_VERTEX_SHADER,   "./resource/shader/vertex.glsl");
     storage.emplace("s_frag", GL_FRAGMENT_SHADER, "./resource/shader/fragment.glsl");
 
-    storage.emplace("color_vert", GL_VERTEX_SHADER,   "./resource/shader/color_in_vertex.glsl");
-    storage.emplace("color_frag", GL_FRAGMENT_SHADER, "./resource/shader/color_in_fragment.glsl");
+    storage.emplace("color_vert", GL_VERTEX_SHADER,   "./resource/shader/vertex_with_color.glsl");
+    storage.emplace("color_frag", GL_FRAGMENT_SHADER, "./resource/shader/fragment_with_color.glsl");
 
     ResourceStorage<Model> models;
     models.emplace("ball", "./resource/model/ball.dae");
@@ -76,9 +76,21 @@ int main()
     ShaderProgram shader_program1(storage.get("color_vert"), storage.get("color_frag"));
     shader_program1.load();
 
-    PrimitiveObject object(shader_program1);
-    ModelObject model_object(shader_program0, models.get("ball"));
     Camera camera;
+
+    std::vector<std::unique_ptr<AbstractObject>> objects;
+    objects.emplace_back(new PrimitiveObject(shader_program1));
+    objects.emplace_back(new PrimitiveObject(shader_program1, glm::translate(glm::mat4(1), glm::vec3(5, 2, 5))));
+    objects.emplace_back(new ModelObject(shader_program0, models.get("ball")));
+    objects.emplace_back(new ModelObject(shader_program0, models.get("ball"), glm::translate(glm::mat4(1), glm::vec3(5, 2, 5))));
+    objects.emplace_back(new ModelObject(shader_program0, models.get("ball"), glm::scale(
+            glm::translate(glm::mat4(1), glm::vec3(5, 2, 5)),
+            glm::vec3(2)
+    )));
+    objects.emplace_back(new ModelObject(shader_program0, models.get("ball"), glm::scale(
+            glm::translate(glm::mat4(1), glm::vec3(5, 2, 5)),
+            glm::vec3(4)
+    )));
 
     glfwSetKeyCallback(window, key_callback);
 
@@ -91,9 +103,10 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glm::mat4 trans = camera.projection_view();
-
-        object.draw(trans);
-        model_object.draw(trans);
+        for (auto& object: objects)
+        {
+            object->draw(trans);
+        }
 
         glfwSwapBuffers(window);
     }

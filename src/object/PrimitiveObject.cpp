@@ -5,7 +5,8 @@
 #include <iostream>
 #include "PrimitiveObject.h"
 
-PrimitiveObject::PrimitiveObject(ShaderProgram& program): AbstractObject(program)
+PrimitiveObject::PrimitiveObject(ShaderProgram& program, glm::mat4&& model):
+        AbstractObject(program, std::forward<glm::mat4>(model))
 {
     vertices.emplace_back(-0.5f, -0.5f, 0.0f);
     vertices.emplace_back( 1.0f,  0.0f, 0.0f);
@@ -36,6 +37,8 @@ void PrimitiveObject::draw(glm::mat4 proj_view) const
 {
     this->program.use();
     this->program.set_uniform("proj_view", proj_view);
+    this->program.set_uniform("model", global);
+
     glBindVertexArray(this->_vao_guid);
     glDrawArrays(GL_TRIANGLES, 0, 3);
     glBindVertexArray(0);
