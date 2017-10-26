@@ -10,17 +10,16 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <iostream>
-#include <PrimitiveObject.h>
 #include <ResourceStorage.h>
 #include <Shader.h>
-#include <Model.h>
-#include <ModelObject.h>
-#include <Camera.h>
 #include <ShaderProgram.h>
+#include <Model.h>
+#include <Camera.h>
+#include <AbstractObject.h>
 
 bool press_keys[1024];
 
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
+void key_callback(GLFWwindow* window, int key, int, int action, int)
 {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GL_TRUE);
@@ -69,7 +68,6 @@ int main()
     storage.emplace("color_frag", GL_FRAGMENT_SHADER, "./resource/shader/color_in_fragment.glsl");
 
     ResourceStorage<Model> models;
-//    models.emplace("ball", "./resource/model/ball.dae");
     models.emplace("ball", Model::from_file("./resource/model/ball.dae"));
     models.emplace("rect", Model::from_rectangle(0, 0, glm::vec3(1)));
 
@@ -78,9 +76,8 @@ int main()
     ShaderProgram shader_program1(storage.get("color_vert"), storage.get("color_frag"));
     shader_program1.load();
 
-    PrimitiveObject object(shader_program1);
-    ModelObject model_object(shader_program0, models.get("ball"));
-    ModelObject rectangle(shader_program0, models.get("rect"));
+    AbstractObject model_object(shader_program0, models.get("ball"));
+    AbstractObject rectangle(shader_program0, models.get("rect"));
     Camera camera;
 
     glfwSetKeyCallback(window, key_callback);
@@ -95,7 +92,6 @@ int main()
 
         glm::mat4 trans = camera.projection_view();
 
-        object.draw(trans);
         rectangle.draw(trans);
         model_object.draw(trans);
 

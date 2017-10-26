@@ -10,20 +10,19 @@
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include "ShaderProgram.h"
+#include "Model.h"
 
 
 class AbstractObject
 {
 public:
-    explicit AbstractObject(ShaderProgram&);
-    virtual ~AbstractObject();
-    virtual void draw(glm::mat4) const = 0;
+    explicit AbstractObject(ShaderProgram&, Model&);
+    virtual ~AbstractObject() = default;
+    void draw(glm::mat4) const;
 
 protected:
     ShaderProgram& program;
-
-    std::vector<glm::vec3> vertices;
-    GLuint _vao_guid;
+    Model& model;
 };
 
 
