@@ -53,7 +53,7 @@ Model *Model::from_file(const std::string &path)
 Model *Model::from_rectangle(GLfloat, GLfloat, glm::vec3)
 {
     std::vector<glm::vec3> vertices;
-    std::vector<unsigned int> indexes = { 0, 1, 2, 1, 2, 4};
+    std::vector<unsigned int> indexes = { 0, 1, 2, 1, 2, 3};
 
     vertices.emplace_back(-0.5f, 0.0f, -0.5f);
     vertices.emplace_back(-0.5f, 0.0f,  0.5f);

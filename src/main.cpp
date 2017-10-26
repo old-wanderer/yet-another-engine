@@ -79,18 +79,18 @@ int main()
     Camera camera;
 
     std::vector<std::unique_ptr<AbstractObject>> objects;
-    objects.emplace_back(new PrimitiveObject(shader_program1));
-    objects.emplace_back(new PrimitiveObject(shader_program1, glm::translate(glm::mat4(1), glm::vec3(5, 2, 5))));
-    objects.emplace_back(new ModelObject(shader_program0, models.get("ball")));
-    objects.emplace_back(new ModelObject(shader_program0, models.get("ball"), glm::translate(glm::mat4(1), glm::vec3(5, 2, 5))));
-    objects.emplace_back(new ModelObject(shader_program0, models.get("ball"), glm::scale(
+//    objects.emplace_back(new AbstractObject(shader_program1));
+    objects.emplace_back(new AbstractObject(shader_program0, models.get("rect"), glm::translate(glm::mat4(1), glm::vec3(5, -2, 5))));
+    objects.emplace_back(new AbstractObject(shader_program0, models.get("ball")));
+    objects.emplace_back(new AbstractObject(shader_program0, models.get("ball"), glm::translate(glm::mat4(1), glm::vec3(5, 2, 5)), false));
+    objects.emplace_back(new AbstractObject(shader_program0, models.get("ball"), glm::scale(
             glm::translate(glm::mat4(1), glm::vec3(5, 2, 5)),
             glm::vec3(2)
-    )));
-    objects.emplace_back(new ModelObject(shader_program0, models.get("ball"), glm::scale(
+    ), false));
+    objects.emplace_back(new AbstractObject(shader_program0, models.get("ball"), glm::scale(
             glm::translate(glm::mat4(1), glm::vec3(5, 2, 5)),
             glm::vec3(4)
-    )));
+    ), false));
 
     glfwSetKeyCallback(window, key_callback);
 
