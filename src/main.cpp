@@ -10,17 +10,16 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <iostream>
-#include <PrimitiveObject.h>
 #include <ResourceStorage.h>
 #include <Shader.h>
-#include <Model.h>
-#include <ModelObject.h>
-#include <Camera.h>
 #include <ShaderProgram.h>
+#include <Model.h>
+#include <Camera.h>
+#include <AbstractObject.h>
 
 bool press_keys[1024];
 
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
+void key_callback(GLFWwindow* window, int key, int, int action, int)
 {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GL_TRUE);
@@ -69,7 +68,8 @@ int main()
     storage.emplace("color_frag", GL_FRAGMENT_SHADER, "./resource/shader/fragment_with_color.glsl");
 
     ResourceStorage<Model> models;
-    models.emplace("ball", "./resource/model/ball.dae");
+    models.emplace("ball", Model::from_file("./resource/model/ball.dae"));
+    models.emplace("rect", Model::from_rectangle(0, 0, glm::vec3(1)));
 
     ShaderProgram shader_program0(storage.get("s_vert"), storage.get("s_frag"));
     shader_program0.load();

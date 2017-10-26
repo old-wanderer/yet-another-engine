@@ -13,16 +13,18 @@
 class Model: public Resource
 {
 public:
-    explicit Model(const char*);
     void load() override;
+
     void unload() override;
-
     void drawModel() const;
-protected:
-    std::string _path_to_source;
 
-    std::vector<glm::vec3>    _vertices; // нужно убрать из полей класса
-    std::vector<unsigned int> _indexes;  // достаточно размера вектора
+    static Model* from_file(const std::string&);
+    static Model* from_rectangle(GLfloat, GLfloat, glm::vec3);
+protected:
+    Model(std::vector<glm::vec3>&&, std::vector<unsigned int>&&);
+
+    std::vector<glm::vec3>    _vertices;
+    std::vector<unsigned int> _indexes;
     GLuint _vao_guid;
     GLuint _vbo_guid;
     GLuint _ebo_guid;

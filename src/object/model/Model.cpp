@@ -10,17 +10,18 @@
 
 #include "Model.h"
 
-Model::Model(const char* path):
-        _path_to_source(path), _vao_guid(0), _vbo_guid(0), _ebo_guid(0) { }
+Model::Model(std::vector<glm::vec3> &&vertices, std::vector<unsigned int> &&indexes):
+    _vertices(vertices), _indexes(indexes), _vao_guid(0), _vbo_guid(0), _ebo_guid(0) { }
 
-void Model::load()
+Model *Model::from_file(const std::string &path)
 {
-    if (this->_isLoaded) return;
+    std::vector<glm::vec3> vertices;
+    std::vector<unsigned int> indexes;
 
     Assimp::Importer importer; // TODO maybe can be static
     // NOTE: если использовать unique_ptr, то свалится с ошибкой. Надо разобраться
     // auto scene = std::unique_ptr<const aiScene>(importer.ReadFile(_path_to_source, aiProcess_Triangulate | aiProcess_FlipUVs));
-    auto scene = importer.ReadFile(_path_to_source, aiProcess_Triangulate | aiProcess_FlipUVs);
+    auto scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
 
     if (!scene)
     {
@@ -34,14 +35,38 @@ void Model::load()
         for (unsigned int vert_index = 0; vert_index < mesh->mNumVertices; vert_index++)
         {
             aiVector3D vert = mesh->mVertices[vert_index];
-            _vertices.emplace_back(vert.x, vert.y, vert.z);
+            vertices.emplace_back(vert.x, vert.y, vert.z);
         }
         for (unsigned int face_index = 0; face_index < mesh->mNumFaces; face_index++)
         {
             aiFace face = mesh->mFaces[face_index];
-            _indexes.insert(_indexes.end(), face.mIndices, face.mIndices + face.mNumIndices);
+            indexes.insert(indexes.end(), face.mIndices, face.mIndices + face.mNumIndices);
         }
     }
+
+    return new Model(std::forward<std::vector<glm::vec3>>(vertices),
+                     std::forward<std::vector<unsigned int>>(indexes));
+}
+
+// NOTE: теоритически эти параметры не нужны,
+// так с помощью матрицы объекты можно сделать что угодно
+Model *Model::from_rectangle(GLfloat, GLfloat, glm::vec3)
+{
+    std::vector<glm::vec3> vertices;
+    std::vector<unsigned int> indexes = { 0, 1, 2, 1, 2, 4};
+
+    vertices.emplace_back(-0.5f, 0.0f, -0.5f);
+    vertices.emplace_back(-0.5f, 0.0f,  0.5f);
+    vertices.emplace_back( 0.5f, 0.0f, -0.5f);
+    vertices.emplace_back( 0.5f, 0.0f,  0.5f);
+
+    return new Model(std::forward<std::vector<glm::vec3>>(vertices),
+                     std::forward<std::vector<unsigned int>>(indexes));
+}
+
+void Model::load()
+{
+    if (this->_isLoaded) return;
 
     glGenVertexArrays(1, &this->_vao_guid);
     glGenBuffers(1, &this->_vbo_guid);

@@ -4,13 +4,14 @@
 
 #include "AbstractObject.h"
 
-AbstractObject::AbstractObject(ShaderProgram& program):
-        program(program), _vao_guid(0) { }
+AbstractObject::AbstractObject(ShaderProgram& program, Model& model,  glm::mat4 &&global):
+        program(program), model(model), global(global) { }
 
-AbstractObject::AbstractObject(ShaderProgram &program, glm::mat4 &&global):
-        program(program), global(global), _vao_guid(0) { }
-
-AbstractObject::~AbstractObject()
+void AbstractObject::draw(glm::mat4 proj_view) const
 {
-    glDeleteVertexArrays(1, &this->_vao_guid);
+    this->program.use();
+    this->program.set_uniform("proj_view", proj_view);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    model.drawModel();
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }

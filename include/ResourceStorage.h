@@ -21,7 +21,8 @@ public:
     T& get(std::string key);
 
     template <class ...Args>
-    void emplace(const std::string &key, Args&& ...args);
+    void emplace(const std::string&, Args&& ...args);
+    void emplace(const std::string&, T*);
 private:
     std::map<std::string, std::unique_ptr<T>> resources;
 };
@@ -32,6 +33,13 @@ void ResourceStorage<T>::emplace(const std::string &key, Args &&... args)
 {
     resources.emplace(std::forward<const std::string>(key),
                       std::unique_ptr<T>(new T(std::forward<Args>(args)...)));
+}
+
+template <typename T>
+void ResourceStorage<T>::emplace(const std::string &key, T *value)
+{
+    resources.emplace(std::forward<const std::string>(key),
+                      std::unique_ptr<T>(value));
 }
 
 template <typename T>

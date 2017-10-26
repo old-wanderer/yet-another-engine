@@ -19,7 +19,7 @@ include_directories(./libs/glfw/include)
 include_directories(./libs/glm)
 find_library(RESULT assimp PATHS ./libs/assimp/lib)
 
-file(GLOB_RECURSE SOURCE_FILES src/**.cpp include/*.h)
+file(GLOB_RECURSE SOURCE_FILES src/*.cpp include/*.h)
 
 add_executable(yet_another_engine ${SOURCE_FILES})
 

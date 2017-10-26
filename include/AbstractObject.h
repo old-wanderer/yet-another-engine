@@ -10,23 +10,20 @@
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include "ShaderProgram.h"
+#include "Model.h"
 
 
 class AbstractObject
 {
 public:
-    explicit AbstractObject(ShaderProgram&);
-    AbstractObject(ShaderProgram&, glm::mat4&&);
-    virtual ~AbstractObject();
-    virtual void draw(glm::mat4) const = 0;
+    AbstractObject(ShaderProgram&, Model&, glm::mat4&&);
+    virtual ~AbstractObject() = default;
+    void draw(glm::mat4) const;
 
 protected:
     ShaderProgram& program;
-
+    Model& model;
     glm::mat4 global;
-
-    std::vector<glm::vec3> vertices;
-    GLuint _vao_guid; // TODO убрать, должно быть в Model
 };
 
 
