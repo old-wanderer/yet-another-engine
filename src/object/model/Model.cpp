@@ -10,10 +10,10 @@
 
 #include "Model.h"
 
-Model::Model(std::vector<glm::vec3> &&vertices, std::vector<unsigned int> &&indexes):
-    _vertices(vertices), _indexes(indexes), _vao_guid(0), _vbo_guid(0), _ebo_guid(0) { }
+Model::Model(ShaderProgram& program, std::vector<glm::vec3> &&vertices, std::vector<unsigned int> &&indexes):
+    program(program), _vertices(vertices), _indexes(indexes), _vao_guid(0), _vbo_guid(0), _ebo_guid(0) { }
 
-Model *Model::from_file(const std::string &path)
+Model *Model::from_file(ShaderProgram& program, const std::string &path)
 {
     std::vector<glm::vec3> vertices;
     std::vector<unsigned int> indexes;
@@ -44,13 +44,14 @@ Model *Model::from_file(const std::string &path)
         }
     }
 
-    return new Model(std::forward<std::vector<glm::vec3>>(vertices),
+    return new Model(program,
+                     std::forward<std::vector<glm::vec3>>(vertices),
                      std::forward<std::vector<unsigned int>>(indexes));
 }
 
 // NOTE: теоритически эти параметры не нужны,
 // так с помощью матрицы объекты можно сделать что угодно
-Model *Model::from_rectangle(GLfloat, GLfloat, glm::vec3)
+Model *Model::from_rectangle(ShaderProgram& program,GLfloat, GLfloat, glm::vec3)
 {
     std::vector<glm::vec3> vertices;
     std::vector<unsigned int> indexes = { 0, 1, 2, 1, 2, 3};
@@ -60,7 +61,8 @@ Model *Model::from_rectangle(GLfloat, GLfloat, glm::vec3)
     vertices.emplace_back( 0.5f, 0.0f, -0.5f);
     vertices.emplace_back( 0.5f, 0.0f,  0.5f);
 
-    return new Model(std::forward<std::vector<glm::vec3>>(vertices),
+    return new Model(program,
+                     std::forward<std::vector<glm::vec3>>(vertices),
                      std::forward<std::vector<unsigned int>>(indexes));
 }
 
@@ -96,8 +98,11 @@ void Model::unload()
     glDeleteVertexArrays(1, &this->_vao_guid);
 }
 
-void Model::drawModel() const
+void Model::drawModel(glm::mat4 proj_view, glm::mat4 model) const
 {
+    this->program.use();
+    this->program.set_uniform("proj_view", proj_view);
+    this->program.set_uniform("model", model);
     glBindVertexArray(this->_vao_guid);
     glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(_indexes.size()), GL_UNSIGNED_INT, nullptr);
     glBindVertexArray(0);

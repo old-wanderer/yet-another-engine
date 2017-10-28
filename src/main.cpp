@@ -67,27 +67,30 @@ int main()
     storage.emplace("color_vert", GL_VERTEX_SHADER,   "./resource/shader/vertex_with_color.glsl");
     storage.emplace("color_frag", GL_FRAGMENT_SHADER, "./resource/shader/fragment_with_color.glsl");
 
-    ResourceStorage<Model> models;
-    models.emplace("ball", Model::from_file("./resource/model/ball.dae"));
-    models.emplace("rect", Model::from_rectangle(0, 0, glm::vec3(1)));
-
     ShaderProgram shader_program0(storage.get("s_vert"), storage.get("s_frag"));
     shader_program0.load();
     ShaderProgram shader_program1(storage.get("color_vert"), storage.get("color_frag"));
     shader_program1.load();
 
+    ResourceStorage<Model> models;
+    models.emplace("ball", Model::from_file(shader_program0, "./resource/model/ball.dae"));
+    models.emplace("rect", Model::from_rectangle(shader_program0, 0, 0, glm::vec3(1)));
+
+
     Camera camera;
 
     std::vector<std::unique_ptr<AbstractObject>> objects;
-//    objects.emplace_back(new AbstractObject(shader_program1));
-    objects.emplace_back(new AbstractObject(shader_program0, models.get("rect"), glm::translate(glm::mat4(1), glm::vec3(5, -2, 5))));
-    objects.emplace_back(new AbstractObject(shader_program0, models.get("ball")));
-    objects.emplace_back(new AbstractObject(shader_program0, models.get("ball"), glm::translate(glm::mat4(1), glm::vec3(5, 2, 5)), false));
-    objects.emplace_back(new AbstractObject(shader_program0, models.get("ball"), glm::scale(
+    objects.emplace_back(new AbstractObject(models.get("rect"), glm::scale(
+            glm::translate(glm::mat4(1), glm::vec3(5, -2, 5)),
+            glm::vec3(15)
+    )));
+    objects.emplace_back(new AbstractObject(models.get("ball")));
+    objects.emplace_back(new AbstractObject(models.get("ball"), glm::translate(glm::mat4(1), glm::vec3(5, 2, 5)), false));
+    objects.emplace_back(new AbstractObject(models.get("ball"), glm::scale(
             glm::translate(glm::mat4(1), glm::vec3(5, 2, 5)),
             glm::vec3(2)
     ), false));
-    objects.emplace_back(new AbstractObject(shader_program0, models.get("ball"), glm::scale(
+    objects.emplace_back(new AbstractObject(models.get("ball"), glm::scale(
             glm::translate(glm::mat4(1), glm::vec3(5, 2, 5)),
             glm::vec3(4)
     ), false));

@@ -9,19 +9,17 @@
 
 #include <GL/glew.h>
 #include <glm/glm.hpp>
-#include "ShaderProgram.h"
 #include "Model.h"
 
 
 class AbstractObject
 {
 public:
-    AbstractObject(ShaderProgram&, Model&, glm::mat4&& = glm::mat4(1), bool = true);
+    explicit AbstractObject(Model&, glm::mat4&& = glm::mat4(1), bool = true);
     virtual ~AbstractObject() = default;
     void draw(glm::mat4) const;
 
 protected:
-    ShaderProgram& program;
     Model& model;
     glm::mat4 global;
 
