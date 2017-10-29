@@ -80,6 +80,13 @@ int main()
                            .import_from_file("./resource/model/ball.dae")
                            .build()
     );
+    models.emplace("cube",
+                   ModelBuilder()
+                           .setProgram(shader_program1)
+                           .import_from_file("./resource/model/cube-purple.dae")
+                           .set_color_vertex(1, glm::vec3(.1f, 1.f, .1f))
+                           .build()
+    );
     models.emplace("rect",
                    ModelBuilder()
                            .setProgram(shader_program1)
@@ -108,6 +115,7 @@ int main()
             glm::translate(glm::mat4(1), glm::vec3(5, 2, 5)),
             glm::vec3(4)
     ), false));
+    objects.emplace_back(new AbstractObject(models.get("cube"), glm::translate(glm::mat4(1), glm::vec3(-5, 0, 0))));
 
     glfwSetKeyCallback(window, key_callback);
 

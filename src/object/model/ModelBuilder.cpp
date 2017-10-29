@@ -42,6 +42,12 @@ ModelBuilder &ModelBuilder::push_back_vertex(glm::vec3 coord, glm::vec3 color)
     return *this;
 }
 
+ModelBuilder &ModelBuilder::push_back_vertex(vertex vertex)
+{
+    vertices.push_back(vertex);
+    return *this;
+}
+
 ModelBuilder &ModelBuilder::push_back_indices(unsigned int)
 {
     return *this;
@@ -69,7 +75,12 @@ ModelBuilder &ModelBuilder::import_from_file(const std::string &path)
         for (unsigned int vert_index = 0; vert_index < mesh->mNumVertices; vert_index++)
         {
             aiVector3D vert = mesh->mVertices[vert_index];
-            push_back_vertex(glm::vec3(vert.x, vert.y, vert.z));
+            vertex vertex = { glm::vec3(vert.x, vert.y, vert.z) };
+            if (mesh->HasVertexColors(0)) {
+                aiColor4D* color = mesh->mColors[0];
+                vertex.color = glm::vec3(color->r, color->g, color->b);
+            }
+            push_back_vertex(vertex);
         }
         for (unsigned int face_index = 0; face_index < mesh->mNumFaces; face_index++)
         {
@@ -78,5 +89,11 @@ ModelBuilder &ModelBuilder::import_from_file(const std::string &path)
         }
     }
 
+    return *this;
+}
+
+ModelBuilder &ModelBuilder::set_color_vertex(unsigned int index, glm::vec3 color)
+{
+    vertices[index].color = color;
     return *this;
 }

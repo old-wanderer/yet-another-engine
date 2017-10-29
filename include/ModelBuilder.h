@@ -19,6 +19,8 @@ public:
     // TODO: продумать необходимость стратегий импорта
     ModelBuilder& import_from_file(const std::string&);
     ModelBuilder& push_back_vertex(glm::vec3, glm::vec3 = glm::vec3(0.5));
+    ModelBuilder& push_back_vertex(vertex);
+    ModelBuilder& set_color_vertex(unsigned int, glm::vec3);
     ModelBuilder& push_back_indices(unsigned int);
     ModelBuilder& push_back_all_indices(unsigned int*, unsigned int*);
     ModelBuilder& push_back_all_indices(std::initializer_list<unsigned int>);
