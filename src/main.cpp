@@ -16,6 +16,7 @@
 #include <Model.h>
 #include <Camera.h>
 #include <AbstractObject.h>
+#include <ModelBuilder.h>
 
 bool press_keys[1024];
 
@@ -73,9 +74,22 @@ int main()
     shader_program1.load();
 
     ResourceStorage<Model> models;
-    models.emplace("ball", Model::from_file(shader_program0, "./resource/model/ball.dae"));
-    models.emplace("rect", Model::from_rectangle(shader_program0, 0, 0, glm::vec3(1)));
-
+    models.emplace("ball",
+                   ModelBuilder()
+                           .setProgram(shader_program0)
+                           .import_from_file("./resource/model/ball.dae")
+                           .build()
+    );
+    models.emplace("rect",
+                   ModelBuilder()
+                           .setProgram(shader_program1)
+                           .push_back_vertex(glm::vec3(-0.5f, 0.0f, -0.5f), glm::vec3(.1f, .9f, .1f))
+                           .push_back_vertex(glm::vec3(-0.5f, 0.0f,  0.5f))
+                           .push_back_vertex(glm::vec3( 0.5f, 0.0f, -0.5f))
+                           .push_back_vertex(glm::vec3( 0.5f, 0.0f,  0.5f))
+                           .push_back_all_indices({ 0, 1, 2, 1, 2, 3})
+                           .build()
+    );
 
     Camera camera;
 

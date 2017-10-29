@@ -11,23 +11,28 @@
 #include "Resource.h"
 #include "ShaderProgram.h"
 
+struct vertex
+{
+    glm::vec3 coordinate;
+    glm::vec3 color;
+};
+
 class Model: public Resource
 {
+    friend class ModelBuilder;
 public:
     void load() override;
-
     void unload() override;
-    void drawModel(glm::mat4, glm::mat4) const;
 
-    static Model* from_file(ShaderProgram&, const std::string&);
-    static Model* from_rectangle(ShaderProgram&, GLfloat, GLfloat, glm::vec3);
+    void drawModel(glm::mat4, glm::mat4) const;
 protected:
-    Model(ShaderProgram&, std::vector<glm::vec3>&&, std::vector<unsigned int>&&);
+    explicit Model(ShaderProgram&);
 
     ShaderProgram& program;
 
-    std::vector<glm::vec3>    _vertices;
+    std::vector<vertex>       _vertices;
     std::vector<unsigned int> _indexes;
+
     GLuint _vao_guid;
     GLuint _vbo_guid;
     GLuint _ebo_guid;
