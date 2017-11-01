@@ -18,6 +18,7 @@ include_directories(./include)
 include_directories(./libs/glfw/include)
 include_directories(./libs/glm)
 find_library(RESULT assimp PATHS ./libs/assimp/lib)
+find_library(RESULT png PATHS /usr/local/Cellar/libpng/1.6.34/lib)
 
 file(GLOB_RECURSE SOURCE_FILES src/*.cpp include/*.h)
 
@@ -25,3 +26,4 @@ add_executable(yet_another_engine ${SOURCE_FILES})
 
 target_link_libraries(yet_another_engine glfw ${OPENGL_glu_LIBRARY} ${GLFW_LIBRARIES})
 target_link_libraries(yet_another_engine assimp)
+target_link_libraries(yet_another_engine png)

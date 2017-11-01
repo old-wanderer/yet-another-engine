@@ -24,7 +24,7 @@ public:
     void load() override;
     void unload() override;
 
-    void drawModel(glm::mat4, glm::mat4) const;
+    virtual void drawModel(glm::mat4, glm::mat4) const;
 protected:
     explicit Model(ShaderProgram&);
 

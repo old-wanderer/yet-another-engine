@@ -12,7 +12,7 @@
 class Texture: public Resource
 {
 public:
-    Texture(std::string&&);
+    explicit Texture(std::string&&);
 
     void load() override;
     void unload() override;

@@ -17,6 +17,8 @@
 #include <Camera.h>
 #include <AbstractObject.h>
 #include <ModelBuilder.h>
+#include <Texture.h>
+#include <TexturedModel.h>
 
 bool press_keys[1024];
 
@@ -61,6 +63,12 @@ int main()
 
     glEnable(GL_DEPTH_TEST);
 
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
     ResourceStorage<Shader> storage;
     storage.emplace("s_vert", GL_VERTEX_SHADER,   "./resource/shader/vertex.glsl");
     storage.emplace("s_frag", GL_FRAGMENT_SHADER, "./resource/shader/fragment.glsl");
@@ -68,10 +76,18 @@ int main()
     storage.emplace("color_vert", GL_VERTEX_SHADER,   "./resource/shader/vertex_with_color.glsl");
     storage.emplace("color_frag", GL_FRAGMENT_SHADER, "./resource/shader/fragment_with_color.glsl");
 
+    storage.emplace("texture_vert", GL_VERTEX_SHADER,   "./resource/shader/vertex_with_texture.glsl");
+    storage.emplace("texture_frag", GL_FRAGMENT_SHADER, "./resource/shader/fragment_with_texture.glsl");
+
     ShaderProgram shader_program0(storage.get("s_vert"), storage.get("s_frag"));
     shader_program0.load();
     ShaderProgram shader_program1(storage.get("color_vert"), storage.get("color_frag"));
     shader_program1.load();
+    ShaderProgram shader_program2(storage.get("texture_vert"), storage.get("texture_frag"));
+    shader_program2.load();
+
+    ResourceStorage<Texture> textures;
+    textures.emplace("bricks", "./resource/texture/bricks.png");
 
     ResourceStorage<Model> models;
     models.emplace("ball",
@@ -97,6 +113,7 @@ int main()
                            .push_back_all_indices({ 0, 1, 2, 1, 2, 3})
                            .build()
     );
+    models.emplace("bricks", static_cast<Model*>(new TexturedModel(shader_program2, textures.get("bricks"))));
 
     Camera camera;
 
@@ -116,6 +133,9 @@ int main()
             glm::vec3(4)
     ), false));
     objects.emplace_back(new AbstractObject(models.get("cube"), glm::translate(glm::mat4(1), glm::vec3(-5, 0, 0))));
+    objects.emplace_back(new AbstractObject(models.get("bricks"), glm::scale(
+            glm::translate(glm::mat4(1), glm::vec3(10, 2, 10)), glm::vec3(3)
+    )));
 
     glfwSetKeyCallback(window, key_callback);
 
