@@ -4,6 +4,7 @@
 
 #include <png.h>
 #include <cstdio>
+#include <iostream>
 
 #include "Texture.h"
 
@@ -13,46 +14,63 @@ void Texture::load()
 {
     if (this->_isLoaded) return;
 
-    FILE *fd = fopen(path.c_str(), "rb");
-    if (!fd)
-        throw std::out_of_range("file not found");
+    FILE *fp = fopen(path.c_str(), "rb");
+    if (!fp)
+    {
+        throw std::out_of_range("file not found: " + path);
+    }
 
-    png_structp png  = png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
-    png_infop   info = png_create_info_struct(png);
+    uint8_t header[8];
+    fread(header, 1, 8, fp);
+    if (png_sig_cmp(header, 0, 8))
+    {
+        fclose(fp);
+        throw std::out_of_range("file (" + path + ") is not a PNG");
+    }
 
-    png_init_io(png, fd);
-    png_read_info(png, info);
+    png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
+    png_infop info_ptr = png_create_info_struct(png_ptr);
+    png_infop end_info = png_create_info_struct(png_ptr);
 
-    uint64_t width      = png_get_image_width(png, info);
-    uint64_t height     = png_get_image_height(png, info);
-    uint8_t  color_type = png_get_color_type(png, info);
-    uint8_t  bit_depth  = png_get_bit_depth(png, info);
+    png_init_io(png_ptr, fp);
+    png_set_sig_bytes(png_ptr, 8);
+    png_read_info(png_ptr, info_ptr);
 
-    int32_t number_of_passes = png_set_interlace_handling(png);
-    png_read_update_info(png, info);
+    uint64_t width  = png_get_image_width(png_ptr, info_ptr);
+    uint64_t height = png_get_image_height(png_ptr, info_ptr);
 
+    png_read_update_info(png_ptr, info_ptr);
 
-    auto row_data = new uint8_t*[height];
+    size_t row_bytes = png_get_rowbytes(png_ptr, info_ptr);
+    row_bytes += 3 - ((row_bytes-1) % 4); // выравнивание по 4 байта. требует openGl
+
+    auto image_data = new uint8_t[row_bytes * height];
+    auto row_pointers = new uint8_t* [height];
+
     for (int i = 0; i < height; i++)
-        row_data[i] = new uint8_t[width * 4];
+    {
+        row_pointers[height - 1 - i] = image_data + i * row_bytes;
+    }
 
-    png_read_image(png, row_data);
+    png_read_image(png_ptr, row_pointers);
 
-    fclose(fd);
-
-    glGenTextures(1, &this->_guid);
-    glBindTexture(GL_TEXTURE_2D, this->_guid);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
-                 static_cast<GLsizei>(width), static_cast<GLsizei>(height), 0,
-                 GL_RGBA, GL_UNSIGNED_BYTE, row_data);
+    glGenTextures(1, &_guid);
+    glBindTexture(GL_TEXTURE_2D, _guid);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLint)width, (GLint)height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image_data);
     glGenerateMipmap(GL_TEXTURE_2D);
 
-    for (int i = 0; i < height; i++)
-        delete[] row_data[i];
-    delete[] row_data;
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
     glBindTexture(GL_TEXTURE_2D, 0);
+
+    png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
+    free(image_data);
+    free(row_pointers);
+    fclose(fp);
 
     this->_isLoaded = true;
 }

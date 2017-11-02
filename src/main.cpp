@@ -62,12 +62,8 @@ int main()
     glGetError();
 
     glEnable(GL_DEPTH_TEST);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     ResourceStorage<Shader> storage;
     storage.emplace("s_vert", GL_VERTEX_SHADER,   "./resource/shader/vertex.glsl");
@@ -88,6 +84,7 @@ int main()
 
     ResourceStorage<Texture> textures;
     textures.emplace("bricks", "./resource/texture/bricks.png");
+    textures.emplace("illuminati", "./resource/texture/bricks.png");
 
     ResourceStorage<Model> models;
     models.emplace("ball",
@@ -134,7 +131,7 @@ int main()
     ), false));
     objects.emplace_back(new AbstractObject(models.get("cube"), glm::translate(glm::mat4(1), glm::vec3(-5, 0, 0))));
     objects.emplace_back(new AbstractObject(models.get("bricks"), glm::scale(
-            glm::translate(glm::mat4(1), glm::vec3(10, 2, 10)), glm::vec3(3)
+            glm::translate(glm::mat4(1), glm::vec3(10, 2, 13)), glm::vec3(10)
     )));
 
     glfwSetKeyCallback(window, key_callback);

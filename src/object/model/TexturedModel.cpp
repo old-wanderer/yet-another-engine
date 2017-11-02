@@ -12,11 +12,6 @@ struct vert {
 TexturedModel::TexturedModel(ShaderProgram &program, Texture& texture):
         Model(program), texture(texture)
 {
-
-    //  0.5f,  0.5f, 0.0f, 1.0f, 1.0f,   // Верхний правый
-    //  0.5f, -0.5f, 0.0f, 1.0f, 0.0f,   // Нижний правый
-    // -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,   // Нижний левый
-    // -0.5f,  0.5f, 0.0f, 0.0f, 1.0f    // Верхний левый
     _vertices.push_back({glm::vec3( 0.5f,  0.5f, 0.0f)});
     _vertices.push_back({glm::vec3( 0.5f, -0.5f, 0.0f)});
     _vertices.push_back({glm::vec3(-0.5f, -0.5f, 0.0f)});
@@ -29,27 +24,11 @@ void TexturedModel::load()
 {
     if (this->_isLoaded) return;
 
-    uint32_t data_offset = sizeof(glm::vec3) + sizeof(glm::vec2);
-    auto row_data = new uint8_t[data_offset * _vertices.size()];
-
-    glm::vec2 text_coord[4] = {
-            glm::vec2(1.0f, 1.0f),
-            glm::vec2(1.0f, 0.0f),
-            glm::vec2(0.0f, 0.0f),
-            glm::vec2(0.0f, 1.0f)
-    };
-
-    for (int i = 0; i < _vertices.size(); i++)
-    {
-        std::memcpy(row_data + i * data_offset, &_vertices[i].coordinate, sizeof(glm::vec3));
-        std::memcpy(row_data + i * data_offset + sizeof(glm::vec3), &text_coord[i], sizeof(glm::vec2));
-    }
-
     std::vector<vert> new_vert = {
-            {glm::vec3( 0.5f,  0.5f, 0.0f), glm::vec2(1.0f, 1.0f)},
-            {glm::vec3( 0.5f, -0.5f, 0.0f), glm::vec2(1.0f, 0.0f)},
+            {glm::vec3( 0.5f,  0.5f, 0.0f), glm::vec2(5.0f, 5.0f)},
+            {glm::vec3( 0.5f, -0.5f, 0.0f), glm::vec2(5.0f, 0.0f)},
             {glm::vec3(-0.5f, -0.5f, 0.0f), glm::vec2(0.0f, 0.0f)},
-            {glm::vec3(-0.5f,  0.5f, 0.0f), glm::vec2(0.0f, 1.0f)}
+            {glm::vec3(-0.5f,  0.5f, 0.0f), glm::vec2(0.0f, 5.0f)}
     };
 
     glGenVertexArrays(1, &this->_vao_guid);
@@ -83,9 +62,8 @@ void TexturedModel::unload()
 
 void TexturedModel::drawModel(glm::mat4 proj_view, glm::mat4 model) const
 {
-    glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, this->texture.guid());
-    glUniform1i(glGetUniformLocation(program.guid(), "texture0"), 0);
+//    glUniform1i(glGetUniformLocation(program.guid(), "texture0"), 0);
     Model::drawModel(proj_view, model);
 }
 
