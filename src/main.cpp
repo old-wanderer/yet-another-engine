@@ -19,6 +19,7 @@
 #include <ModelBuilder.h>
 #include <Texture.h>
 #include <TexturedModel.h>
+#include <ObjectBuilder.h>
 
 bool press_keys[1024];
 
@@ -84,7 +85,7 @@ int main()
 
     ResourceStorage<Texture> textures;
     textures.emplace("bricks", "./resource/texture/bricks.png");
-    textures.emplace("illuminati", "./resource/texture/bricks.png");
+    textures.emplace("illuminati", "./resource/texture/test1.png");
 
     ResourceStorage<Model> models;
     models.emplace("ball",
@@ -111,6 +112,7 @@ int main()
                            .build()
     );
     models.emplace("bricks", static_cast<Model*>(new TexturedModel(shader_program2, textures.get("bricks"))));
+    models.emplace("illuminati", static_cast<Model*>(new TexturedModel(shader_program2, textures.get("illuminati"))));
 
     Camera camera;
 
@@ -130,9 +132,19 @@ int main()
             glm::vec3(4)
     ), false));
     objects.emplace_back(new AbstractObject(models.get("cube"), glm::translate(glm::mat4(1), glm::vec3(-5, 0, 0))));
-    objects.emplace_back(new AbstractObject(models.get("bricks"), glm::scale(
-            glm::translate(glm::mat4(1), glm::vec3(10, 2, 13)), glm::vec3(10)
-    )));
+
+    ObjectBuilder brick_wall_builder = ObjectBuilder().model(models.get("bricks")).scale(10);
+    objects.emplace_back(brick_wall_builder.translate(glm::vec3(10,  2,  13)).build());
+    objects.emplace_back(brick_wall_builder.translate(glm::vec3(10,  0, -10)).build());
+    objects.emplace_back(brick_wall_builder.translate(glm::vec3( 0,  0, -10)).build());
+    objects.emplace_back(brick_wall_builder.translate(glm::vec3( 0, 10, -10)).build());
+
+    objects.emplace_back(ObjectBuilder()
+                                 .model(models.get("illuminati"))
+                                 .translate(glm::vec3(-10, 2, 13))
+                                 .scale(10)
+                                 .build()
+    );
 
     glfwSetKeyCallback(window, key_callback);
 

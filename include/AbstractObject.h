@@ -14,14 +14,15 @@
 
 class AbstractObject
 {
+    friend class ObjectBuilder;
 public:
     explicit AbstractObject(Model&, glm::mat4&& = glm::mat4(1), bool = true);
     virtual ~AbstractObject() = default;
     void draw(glm::mat4) const;
 
 protected:
-    Model& model;
-    glm::mat4 global;
+    Model& object_model;
+    glm::mat4 mat_model;
 
     bool polygon_mode_is_fill;
 };
