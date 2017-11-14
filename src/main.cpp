@@ -20,6 +20,7 @@
 #include <Texture.h>
 #include <TexturedModel.h>
 #include <ObjectBuilder.h>
+#include <Scene3D.h>
 
 bool press_keys[1024];
 
@@ -35,36 +36,8 @@ void key_callback(GLFWwindow* window, int key, int, int action, int)
 
 int main()
 {
-    if (!glfwInit())
-        return -1;
-
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    GLFWwindow* window = glfwCreateWindow(640, 640, "test", nullptr, nullptr);
-    if (!window)
-    {
-        glfwTerminate();
-        return -1;
-    }
-
-    glfwMakeContextCurrent(window);
-
-    glewExperimental = GL_TRUE;
-    GLenum err = glewInit();
-    if (GLEW_OK != err)
-    {
-        printf("Error: %s\n", glewGetErrorString(err));
-        return -1;
-    }
-
-    glGetError();
-
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    Scene3D scene;
+    scene.init();
 
     ResourceStorage<Shader> storage;
     storage.emplace("s_vert", GL_VERTEX_SHADER,   "./resource/shader/vertex.glsl");
@@ -114,59 +87,40 @@ int main()
     models.emplace("bricks", static_cast<Model*>(new TexturedModel(shader_program2, textures.get("bricks"))));
     models.emplace("illuminati", static_cast<Model*>(new TexturedModel(shader_program2, textures.get("illuminati"))));
 
-    Camera camera;
+//    Camera camera;
 
-    std::vector<std::unique_ptr<AbstractObject>> objects;
-    objects.emplace_back(new AbstractObject(models.get("rect"), glm::scale(
+
+    scene.emplace_object(new AbstractObject(models.get("rect"), glm::scale(
             glm::translate(glm::mat4(1), glm::vec3(5, -2, 5)),
             glm::vec3(15)
     )));
-    objects.emplace_back(new AbstractObject(models.get("ball")));
-    objects.emplace_back(new AbstractObject(models.get("ball"), glm::translate(glm::mat4(1), glm::vec3(5, 2, 5)), false));
-    objects.emplace_back(new AbstractObject(models.get("ball"), glm::scale(
+    scene.emplace_object(new AbstractObject(models.get("ball")));
+    scene.emplace_object(new AbstractObject(models.get("ball"), glm::translate(glm::mat4(1), glm::vec3(5, 2, 5)), false));
+    scene.emplace_object(new AbstractObject(models.get("ball"), glm::scale(
             glm::translate(glm::mat4(1), glm::vec3(5, 2, 5)),
             glm::vec3(2)
     ), false));
-    objects.emplace_back(new AbstractObject(models.get("ball"), glm::scale(
+    scene.emplace_object(new AbstractObject(models.get("ball"), glm::scale(
             glm::translate(glm::mat4(1), glm::vec3(5, 2, 5)),
             glm::vec3(4)
     ), false));
-    objects.emplace_back(new AbstractObject(models.get("cube"), glm::translate(glm::mat4(1), glm::vec3(-5, 0, 0))));
+    scene.emplace_object(new AbstractObject(models.get("cube"), glm::translate(glm::mat4(1), glm::vec3(-5, 0, 0))));
 
     ObjectBuilder brick_wall_builder = ObjectBuilder().model(models.get("bricks")).scale(10);
-    objects.emplace_back(brick_wall_builder.translate(glm::vec3(10,  2,  13)).build());
-    objects.emplace_back(brick_wall_builder.translate(glm::vec3(10,  0, -10)).build());
-    objects.emplace_back(brick_wall_builder.translate(glm::vec3( 0,  0, -10)).build());
-    objects.emplace_back(brick_wall_builder.translate(glm::vec3( 0, 10, -10)).build());
+    scene.emplace_object(brick_wall_builder.translate(glm::vec3(10,  2,  13)).build());
+    scene.emplace_object(brick_wall_builder.translate(glm::vec3(10,  0, -10)).build());
+    scene.emplace_object(brick_wall_builder.translate(glm::vec3( 0,  0, -10)).build());
+    scene.emplace_object(brick_wall_builder.translate(glm::vec3( 0, 10, -10)).build());
 
-    objects.emplace_back(ObjectBuilder()
+    scene.emplace_object(ObjectBuilder()
                                  .model(models.get("illuminati"))
                                  .translate(glm::vec3(-10, 2, 13))
                                  .scale(10)
                                  .build()
     );
 
-    glfwSetKeyCallback(window, key_callback);
+    scene.start();
 
-    while (!glfwWindowShouldClose(window))
-    {
-        glfwPollEvents();
-        camera.key_callback(press_keys);
-
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        glm::mat4 trans = camera.projection_view();
-        for (auto& object: objects)
-        {
-            object->draw(trans);
-        }
-
-        glfwSwapBuffers(window);
-    }
-
-
-    glfwDestroyWindow(window);
-    glfwTerminate();
+//    glfwSetKeyCallback(window, key_callback);
     return 0;
 }
