@@ -6,7 +6,7 @@
 #define YET_ANOTHER_ENGINE_TEXTURE_H
 
 
-#include <Resource.h>
+#include <engine/Resource.h>
 #include <string>
 
 class Texture: public Resource

@@ -7,7 +7,7 @@
 #define GLFW_INCLUDE_GLCOREARB
 #include <GLFW/glfw3.h>
 
-#include "Scene3D.h"
+#include "engine/Scene3D.h"
 
 Scene3D::Scene3D()
 {

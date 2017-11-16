@@ -6,7 +6,7 @@
 #include <assimp/postprocess.h>
 #include <assimp/Importer.hpp>
 
-#include "ModelBuilder.h"
+#include "engine/ModelBuilder.h"
 
 ModelBuilder &ModelBuilder::setProgram(ShaderProgram &program)
 {

@@ -2,7 +2,7 @@
 // Created by Андрей on 16.10.17.
 //
 
-#include "Resource.h"
+#include "engine/Resource.h"
 
 Resource::Resource(): _isLoaded(false), _guid(0) { }
 

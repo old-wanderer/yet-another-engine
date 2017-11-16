@@ -2,7 +2,7 @@
 // Created by Андрей on 16.10.17.
 //
 
-#include "AbstractObject.h"
+#include "engine/AbstractObject.h"
 
 AbstractObject::AbstractObject(Model &object_model, glm::mat4&& mat_model, bool mode):
         object_model(object_model), mat_model(mat_model), polygon_mode_is_fill(mode) { }

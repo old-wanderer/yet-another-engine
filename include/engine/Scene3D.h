@@ -6,23 +6,10 @@
 #define YET_ANOTHER_ENGINE_SCENCE3D_H
 
 
+#include "common/Singleton.h"
+
 #include "AbstractObject.h"
 #include "Camera.h"
-
-template <typename T>
-class Singleton {
-public:
-    static T& instance()
-    {
-        static T instance;
-        return instance;
-    }
-    Singleton(Singleton const&) = delete;
-    Singleton& operator= (Singleton const&) = delete;
-
-private:
-    Singleton() = default;
-};
 
 #define CURRENT_SCENE3D Singleton<Scene3D>::instance()
 

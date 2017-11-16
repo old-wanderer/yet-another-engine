@@ -10,17 +10,17 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <iostream>
-#include <ResourceStorage.h>
-#include <Shader.h>
-#include <ShaderProgram.h>
-#include <Model.h>
-#include <Camera.h>
-#include <AbstractObject.h>
-#include <ModelBuilder.h>
-#include <Texture.h>
-#include <TexturedModel.h>
-#include <ObjectBuilder.h>
-#include <Scene3D.h>
+#include <engine/ResourceStorage.h>
+#include <engine/Shader.h>
+#include <engine/ShaderProgram.h>
+#include <engine/Model.h>
+#include <engine/Camera.h>
+#include <engine/AbstractObject.h>
+#include <engine/ModelBuilder.h>
+#include <engine/Texture.h>
+#include <engine/TexturedModel.h>
+#include <engine/ObjectBuilder.h>
+#include <engine/Scene3D.h>
 
 int main()
 {

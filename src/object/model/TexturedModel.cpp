@@ -2,7 +2,7 @@
 // Created by Андрей on 01.11.17.
 //
 
-#include "TexturedModel.h"
+#include "engine/TexturedModel.h"
 
 struct vert {
     glm::vec3 cord;

@@ -6,7 +6,7 @@
 #include <cstdio>
 #include <iostream>
 
-#include "Texture.h"
+#include "engine/Texture.h"
 
 Texture::Texture(std::string && path): path(path) { }
 

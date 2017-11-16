@@ -2,7 +2,7 @@
 // Created by Андрей on 20.10.17.
 //
 
-#include "Camera.h"
+#include "engine/Camera.h"
 
 Camera::Camera()
 {

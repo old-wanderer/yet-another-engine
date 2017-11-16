@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-#include "ShaderProgram.h"
+#include "engine/ShaderProgram.h"
 
 ShaderProgram::ShaderProgram(Shader &vertex, Shader &fragment):
         vertex(vertex), fragment(fragment) { }
