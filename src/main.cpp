@@ -22,21 +22,9 @@
 #include <ObjectBuilder.h>
 #include <Scene3D.h>
 
-bool press_keys[1024];
-
-void key_callback(GLFWwindow* window, int key, int, int action, int)
-{
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, GL_TRUE);
-    if (key >= 0 && key < 1024)
-    {
-        press_keys[key] = action != GLFW_RELEASE;
-    }
-}
-
 int main()
 {
-    Scene3D scene;
+    Scene3D& scene = CURRENT_SCENE3D;
     scene.init();
 
     ResourceStorage<Shader> storage;
@@ -87,9 +75,6 @@ int main()
     models.emplace("bricks", static_cast<Model*>(new TexturedModel(shader_program2, textures.get("bricks"))));
     models.emplace("illuminati", static_cast<Model*>(new TexturedModel(shader_program2, textures.get("illuminati"))));
 
-//    Camera camera;
-
-
     scene.emplace_object(new AbstractObject(models.get("rect"), glm::scale(
             glm::translate(glm::mat4(1), glm::vec3(5, -2, 5)),
             glm::vec3(15)
@@ -120,7 +105,5 @@ int main()
     );
 
     scene.start();
-
-//    glfwSetKeyCallback(window, key_callback);
     return 0;
 }

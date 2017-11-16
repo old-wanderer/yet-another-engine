@@ -32,9 +32,6 @@ Camera::Camera()
 
 const glm::mat4 Camera::projection_view() const
 {
-//    glm::mat4 projection = glm::ortho(-3.f, 3.f,
-//                                      -3.f, 3.f,
-//                                      -3.f, 3.f);
     glm::mat4 projection = glm::perspective(45.0f, 1.f, 0.1f, 100.0f);
     glm::mat4 view = glm::lookAt(position, position + front, up);
     return projection * view;
