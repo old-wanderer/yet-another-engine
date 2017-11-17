@@ -27,6 +27,14 @@ int main()
     Scene3D& scene = CURRENT_SCENE3D;
     scene.init();
 
+    scene.register_key_callback(GLFW_KEY_W, [](Camera& camera) { camera.move_z_axis( .1f); });
+    scene.register_key_callback(GLFW_KEY_S, [](Camera& camera) { camera.move_z_axis(-.1f); });
+    scene.register_key_callback(GLFW_KEY_A, [](Camera& camera) { camera.move_x_axis( .1f); });
+    scene.register_key_callback(GLFW_KEY_D, [](Camera& camera) { camera.move_x_axis(-.1f); });
+    scene.register_key_callback(GLFW_KEY_Q, [](Camera& camera) { camera.move_yaw(-2.f); });
+    scene.register_key_callback(GLFW_KEY_E, [](Camera& camera) { camera.move_yaw( 2.f); });
+    scene.register_key_callback(GLFW_KEY_Z, [](Camera& camera) { camera.move_y_axis(2.f); });
+
     ResourceStorage<Shader> storage;
     storage.emplace("s_vert", GL_VERTEX_SHADER,   "./resource/shader/vertex.glsl");
     storage.emplace("s_frag", GL_FRAGMENT_SHADER, "./resource/shader/fragment.glsl");

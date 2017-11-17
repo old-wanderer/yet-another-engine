@@ -2,33 +2,8 @@
 // Created by Андрей on 20.10.17.
 //
 
+#include <common/Exceptions.h>
 #include "engine/Camera.h"
-
-Camera::Camera()
-{
-    handlers.emplace_back(GLFW_KEY_W, [this] {
-        this->position += speed * front;
-    });
-    handlers.emplace_back(GLFW_KEY_S, [this] {
-        this->position -= speed * front;
-    });
-    handlers.emplace_back(GLFW_KEY_A, [this] {
-        this->position += speed * glm::normalize(glm::cross(up, front));
-    });
-    handlers.emplace_back(GLFW_KEY_D, [this] {
-        this->position += speed * glm::normalize(glm::cross(front, up));
-    });
-    handlers.emplace_back(GLFW_KEY_Q, [this] {
-        this->yaw -= 2.f;
-        this->front.x = cos(glm::radians(yaw));
-        this->front.z = sin(glm::radians(yaw));
-    });
-    handlers.emplace_back(GLFW_KEY_E, [this] {
-        this->yaw += 2.f;
-        this->front.x = cos(glm::radians(yaw));
-        this->front.z = sin(glm::radians(yaw));
-    });
-}
 
 const glm::mat4 Camera::projection_view() const
 {
@@ -37,13 +12,34 @@ const glm::mat4 Camera::projection_view() const
     return projection * view;
 }
 
-void Camera::key_callback(const bool press_keys[1024])
+void Camera::move_x_axis(float offset)
 {
-    for (auto& pair: handlers)
-    {
-        if (press_keys[pair.first])
-        {
-            pair.second();
-        }
-    }
+    this->position += offset * glm::normalize(glm::cross(up, front));
+}
+
+void Camera::move_y_axis(float)
+{
+    NOT_IMPLEMENTED;
+}
+
+void Camera::move_z_axis(float offset)
+{
+    this->position += offset * front;
+}
+
+void Camera::move_yaw(float angle)
+{
+    this->yaw += angle;
+    this->front.x = cos(glm::radians(yaw));
+    this->front.z = sin(glm::radians(yaw));
+}
+
+void Camera::move_roll(float)
+{
+    NOT_IMPLEMENTED;
+}
+
+void Camera::move_pitch(float)
+{
+    NOT_IMPLEMENTED;
 }

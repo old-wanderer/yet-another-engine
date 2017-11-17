@@ -88,6 +88,11 @@ void Scene3D::start()
     glfwTerminate();
 }
 
+void Scene3D::register_key_callback(short key, std::function<void(Camera &)> &&handler)
+{
+    this->key_handlers.emplace_back(key, handler);
+}
+
 void Scene3D::key_callback(GLFWwindow* window, int key, int, int action, int)
 {
     if (key >= 0 && key < 1024)

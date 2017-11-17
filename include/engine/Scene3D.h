@@ -16,9 +16,13 @@
 class Scene3D
 {
     friend class Singleton<Scene3D>;
+
+    typedef std::function<void(Camera&)> KeyCallback;
 public:
     void init();
     void start();
+
+    void register_key_callback(short, KeyCallback&&);
 
     void emplace_object(AbstractObject*);
 protected:
