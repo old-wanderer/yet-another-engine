@@ -1,29 +1,17 @@
 //
-// Created by Андрей on 15.10.17.
+// Created by Андрей on 18.11.2017.
 //
 
-#include <GL/glew.h>
-
-#define GLFW_INCLUDE_GLCOREARB
-#include <GLFW/glfw3.h>
-
-#include <glm/gtc/type_ptr.hpp>
 
 #include <iostream>
+#include <engine/Scene3D.h>
 #include <engine/ResourceStorage.h>
-#include <engine/Shader.h>
-#include <engine/ShaderProgram.h>
-#include <engine/Model.h>
-#include <engine/Camera.h>
-#include <engine/AbstractObject.h>
-#include <engine/ModelBuilder.h>
 #include <engine/Texture.h>
+#include <engine/ModelBuilder.h>
 #include <engine/TexturedModel.h>
 #include <engine/ObjectBuilder.h>
-#include <engine/Scene3D.h>
 
-int main()
-{
+int main() {
     Scene3D& scene = CURRENT_SCENE3D;
     scene.init();
 

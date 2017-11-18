@@ -37,4 +37,4 @@
 .idea/
 cmake-build-debug/
 
-libs/
+engine/libs/
