@@ -32,6 +32,8 @@ protected:
     std::vector<vertex>       vertices;
     std::vector<unsigned int> indices;
 
+    std::vector<Mesh> meshes;
+
     ShaderProgram* program = nullptr;
 };
 

@@ -21,6 +21,8 @@ Model *ModelBuilder::build()
     std::copy(vertices.begin(), vertices.end(), std::back_inserter(model->_vertices));
     std::copy(indices.begin(), indices.end(), std::back_inserter(model->_indexes));
 
+    std::copy(meshes.begin(), meshes.end(), std::back_inserter(model->meshes));
+
     return model;
 }
 
@@ -68,9 +70,25 @@ ModelBuilder &ModelBuilder::import_from_file(const std::string &path)
         throw 1;
     }
 
+
+//    if (scene->mNumMaterials) {
+//        for (uint32_t material_index = 0; material_index < scene->mNumMaterials; material_index++)
+//        {
+//            std::cout << "----------------------" << std::endl;
+//            aiMaterial *material = scene->mMaterials[material_index];
+//            aiString texture_path;
+//            if(material->GetTexture(aiTextureType_DIFFUSE, 0, &texture_path) == AI_SUCCESS)
+//            {
+//                std::cout << "texture path: " << texture_path.C_Str() << std::endl;
+//            }
+//        }
+//    }
+
     // NOTE: количество вершин и индексов равно, чего быть не должно с ball.вфу
-    for (unsigned int mesh_index = 0; mesh_index < 1; mesh_index++)
+    for (unsigned int mesh_index = 0; mesh_index < scene->mNumMeshes; mesh_index++)
     {
+        std::vector<vertex> mesh_vertices;
+        std::vector<uint32_t> mesh_indices;
         aiMesh *mesh = scene->mMeshes[mesh_index];
         for (unsigned int vert_index = 0; vert_index < mesh->mNumVertices; vert_index++)
         {
@@ -80,13 +98,17 @@ ModelBuilder &ModelBuilder::import_from_file(const std::string &path)
                 aiColor4D* color = mesh->mColors[0];
                 vertex.color = glm::vec3(color->r, color->g, color->b);
             }
-            push_back_vertex(vertex);
+//            push_back_vertex(vertex);
+            mesh_vertices.push_back(vertex);
         }
         for (unsigned int face_index = 0; face_index < mesh->mNumFaces; face_index++)
         {
             aiFace face = mesh->mFaces[face_index];
-            push_back_all_indices(face.mIndices, face.mIndices + face.mNumIndices);
+//            push_back_all_indices(face.mIndices, face.mIndices + face.mNumIndices);
+            mesh_indices.insert(mesh_indices.end(), face.mIndices, face.mIndices + face.mNumIndices);
         }
+        meshes.emplace_back(std::forward<std::vector<vertex>>(mesh_vertices),
+                            std::forward<std::vector<uint32_t>>(mesh_indices));
     }
 
     return *this;

@@ -10,12 +10,7 @@
 #include <vector>
 #include "Resource.h"
 #include "ShaderProgram.h"
-
-struct vertex
-{
-    glm::vec3 coordinate;
-    glm::vec3 color;
-};
+#include "Mesh.h"
 
 class Model: public Resource
 {
@@ -29,6 +24,8 @@ protected:
     explicit Model(ShaderProgram&);
 
     ShaderProgram& program;
+
+    std::vector<Mesh> meshes;
 
     std::vector<vertex>       _vertices;
     std::vector<unsigned int> _indexes;
