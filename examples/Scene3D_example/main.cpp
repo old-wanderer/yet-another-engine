@@ -24,14 +24,14 @@ int main() {
     scene.register_key_callback(GLFW_KEY_Z, [](Camera& camera) { camera.move_y_axis(2.f); });
 
     ResourceStorage<Shader> storage;
-    storage.emplace("s_vert", GL_VERTEX_SHADER,   "../resource/shader/vertex.glsl");
-    storage.emplace("s_frag", GL_FRAGMENT_SHADER, "../resource/shader/fragment.glsl");
+    storage.emplace("s_vert", GL_VERTEX_SHADER,   "./resource/shader/vertex.glsl");
+    storage.emplace("s_frag", GL_FRAGMENT_SHADER, "./resource/shader/fragment.glsl");
 
-    storage.emplace("color_vert", GL_VERTEX_SHADER,   "../resource/shader/vertex_with_color.glsl");
-    storage.emplace("color_frag", GL_FRAGMENT_SHADER, "../resource/shader/fragment_with_color.glsl");
+    storage.emplace("color_vert", GL_VERTEX_SHADER,   "./resource/shader/vertex_with_color.glsl");
+    storage.emplace("color_frag", GL_FRAGMENT_SHADER, "./resource/shader/fragment_with_color.glsl");
 
-    storage.emplace("texture_vert", GL_VERTEX_SHADER,   "../resource/shader/vertex_with_texture.glsl");
-    storage.emplace("texture_frag", GL_FRAGMENT_SHADER, "../resource/shader/fragment_with_texture.glsl");
+    storage.emplace("texture_vert", GL_VERTEX_SHADER,   "./resource/shader/vertex_with_texture.glsl");
+    storage.emplace("texture_frag", GL_FRAGMENT_SHADER, "./resource/shader/fragment_with_texture.glsl");
 
     ShaderProgram shader_program0(storage.get("s_vert"), storage.get("s_frag"));
     shader_program0.load();
@@ -41,20 +41,20 @@ int main() {
     shader_program2.load();
 
     ResourceStorage<Texture> textures;
-    textures.emplace("bricks", "../resource/texture/bricks.png");
-    textures.emplace("illuminati", "../resource/texture/test1.png");
+    textures.emplace("bricks", "./resource/texture/bricks.png");
+    textures.emplace("illuminati", "./resource/texture/test1.png");
 
     ResourceStorage<Model> models;
     models.emplace("ball",
                    ModelBuilder()
                            .setProgram(shader_program0)
-                           .import_from_file("../resource/model/ball.dae")
+                           .import_from_file("./resource/model/ball.dae")
                            .build()
     );
     models.emplace("cube",
                    ModelBuilder()
                            .setProgram(shader_program1)
-                           .import_from_file("../resource/model/cube-purple.dae")
+                           .import_from_file("./resource/model/cube-purple.dae")
                            .set_color_vertex(1, glm::vec3(.1f, 1.f, .1f))
                            .build()
     );

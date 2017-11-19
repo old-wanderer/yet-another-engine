@@ -6,7 +6,7 @@ else()
 endif()
 
 # символьная ссылка на директорию с ресурсами, для билда надо будет заменить
-execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_SOURCE_DIR}/resource ${CMAKE_BINARY_DIR}/exaKmples/resource)
+execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_SOURCE_DIR}/resource ${CMAKE_BINARY_DIR}/examples/resource)
 
 include_directories(../engine/include)
 include_directories(../engine/libs/glm)
