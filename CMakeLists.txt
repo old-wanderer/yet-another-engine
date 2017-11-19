@@ -4,5 +4,4 @@ project(yet_another_engine)
 set(CMAKE_CXX_STANDARD 11)
 
 add_subdirectory(engine)
-
-add_subdirectory(exemples/Scene3D_exemple)
+add_subdirectory(examples)
