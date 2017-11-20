@@ -18,10 +18,6 @@ ModelBuilder &ModelBuilder::setProgram(ShaderProgram &program)
 Model *ModelBuilder::build()
 {
     auto * model = new Model(*program);
-
-    std::copy(vertices.begin(), vertices.end(), std::back_inserter(model->_vertices));
-    std::copy(indices.begin(), indices.end(), std::back_inserter(model->_indexes));
-
     std::copy(meshes.begin(), meshes.end(), std::back_inserter(model->meshes));
 
     return model;

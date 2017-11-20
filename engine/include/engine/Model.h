@@ -24,15 +24,7 @@ protected:
     explicit Model(ShaderProgram&);
 
     ShaderProgram& program;
-
     std::vector<Mesh> meshes;
-
-    std::vector<vertex>       _vertices;
-    std::vector<unsigned int> _indexes;
-
-    GLuint _vao_guid;
-    GLuint _vbo_guid;
-    GLuint _ebo_guid;
 };
 
 

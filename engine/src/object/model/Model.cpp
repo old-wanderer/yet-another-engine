@@ -6,7 +6,7 @@
 #include "engine/Model.h"
 
 
-Model::Model(ShaderProgram& program): program(program), _vao_guid(0), _vbo_guid(0), _ebo_guid(0) { }
+Model::Model(ShaderProgram& program): program(program) { }
 
 void Model::load()
 {

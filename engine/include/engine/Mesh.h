@@ -22,7 +22,7 @@ class Mesh: public Resource
 {
 friend class ModelBuilder;
 public:
-    Mesh() = default;
+    Mesh();
 
     void load() override;
     void unload() override;

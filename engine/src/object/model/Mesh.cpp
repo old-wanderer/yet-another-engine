@@ -5,6 +5,8 @@
 #include <iostream>
 #include "engine/Mesh.h"
 
+Mesh::Mesh(): _vao_guid(0), _vbo_guid(0), _ebo_guid(0) { }
+
 void Mesh::load()
 {
     if (this->_isLoaded) return;
