@@ -38,12 +38,16 @@ int main()
     shader_program2.load();
 
     ResourceStorage<Model> models;
-    models.emplace("brick-cube", ModelBuilder()
-            .setProgram(shader_program0)
+    models.emplace("king", ModelBuilder()
+            .setProgram(shader_program2)
             .import_from_file("./resource/model/king.obj")
             .build());
 
-    scene.emplace_object(new AbstractObject(models.get("brick-cube"), glm::mat4(), false));
+    scene.emplace_object(ObjectBuilder()
+                                 .model(models.get("king"))
+                                 .scale(glm::vec3(.5f))
+                                 .rotate(135, glm::vec3(0.f, 1.f, 0.f))
+                                 .build());
     scene.start();
     return 0;
 }

@@ -2,10 +2,8 @@
 // Created by Андрей on 20.11.2017.
 //
 
+#include <iostream>
 #include "engine/Mesh.h"
-
-Mesh::Mesh(std::vector<vertex> &&vertices, std::vector<uint32_t> &&indices): _vertices(vertices),
-                                                                             _indices(indices) {}
 
 void Mesh::load()
 {
@@ -29,6 +27,9 @@ void Mesh::load()
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(vertex), (GLvoid*)sizeof(vertex::coordinate));
 
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(vertex), (GLvoid*)(sizeof(vertex::coordinate) * 2));
+
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
@@ -45,6 +46,8 @@ void Mesh::unload()
 
 void Mesh::draw() const
 {
+    if (this->_texture)
+        glBindTexture(GL_TEXTURE_2D, this->_texture->guid());
     glBindVertexArray(this->_vao_guid);
     glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(_indices.size()), GL_UNSIGNED_INT, nullptr);
     glBindVertexArray(0);

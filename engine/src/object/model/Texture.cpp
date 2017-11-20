@@ -73,10 +73,12 @@ void Texture::load()
     fclose(fp);
 
     this->_isLoaded = true;
+    std::cout << "textured(" << this->_guid << "): " << path << " was loaded" << std::endl;
 }
 
 void Texture::unload()
 {
     this->_isLoaded = false;
     glDeleteTextures(1, &this->_guid);
+    std::cout << "textured(" << this->_guid << ") was unloaded" << std::endl;
 }

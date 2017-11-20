@@ -5,6 +5,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <assimp/Importer.hpp>
+#include <iostream>
 
 #include "engine/ModelBuilder.h"
 
@@ -70,45 +71,52 @@ ModelBuilder &ModelBuilder::import_from_file(const std::string &path)
         throw 1;
     }
 
-
-//    if (scene->mNumMaterials) {
-//        for (uint32_t material_index = 0; material_index < scene->mNumMaterials; material_index++)
-//        {
-//            std::cout << "----------------------" << std::endl;
-//            aiMaterial *material = scene->mMaterials[material_index];
-//            aiString texture_path;
-//            if(material->GetTexture(aiTextureType_DIFFUSE, 0, &texture_path) == AI_SUCCESS)
-//            {
-//                std::cout << "texture path: " << texture_path.C_Str() << std::endl;
-//            }
-//        }
-//    }
+    std::vector<std::shared_ptr<Texture>> textures;
+    if (scene->mNumMaterials) {
+        for (uint32_t material_index = 0; material_index < scene->mNumMaterials; material_index++)
+        {
+            aiMaterial *material = scene->mMaterials[material_index];
+            aiString texture_path;
+            if(material->GetTexture(aiTextureType_DIFFUSE, 0, &texture_path) == AI_SUCCESS)
+            {
+                std::string _path;
+                _path.append("./resource/model/").append(texture_path.C_Str());
+                textures.emplace_back(new Texture(std::forward<std::string>(_path)));
+            }
+        }
+    }
 
     // NOTE: количество вершин и индексов равно, чего быть не должно с ball.вфу
     for (unsigned int mesh_index = 0; mesh_index < scene->mNumMeshes; mesh_index++)
     {
-        std::vector<vertex> mesh_vertices;
-        std::vector<uint32_t> mesh_indices;
-        aiMesh *mesh = scene->mMeshes[mesh_index];
-        for (unsigned int vert_index = 0; vert_index < mesh->mNumVertices; vert_index++)
+        aiMesh *aimesh = scene->mMeshes[mesh_index];
+        Mesh mesh;
+        if (aimesh->mMaterialIndex)
         {
-            aiVector3D vert = mesh->mVertices[vert_index];
+            mesh._texture = textures[aimesh->mMaterialIndex - 1];
+            mesh._texture->load();
+        }
+        for (unsigned int vert_index = 0; vert_index < aimesh->mNumVertices; vert_index++)
+        {
+            aiVector3D vert = aimesh->mVertices[vert_index];
             vertex vertex = { glm::vec3(vert.x, vert.y, vert.z) };
-            if (mesh->HasVertexColors(0)) {
-                aiColor4D* color = mesh->mColors[0];
-                vertex.color = glm::vec3(color->r, color->g, color->b);
+            if (aimesh->HasVertexColors(0)) {
+                aiColor4D color = aimesh->mColors[0][vert_index];
+                vertex.color = glm::vec3(color.r, color.g, color.b);
             }
-//            push_back_vertex(vertex);
-            mesh_vertices.push_back(vertex);
+            if (aimesh->HasTextureCoords(0))
+            {
+                aiVector3D texture_coord = aimesh->mTextureCoords[0][vert_index];
+                vertex.texture_coordinate = glm::vec2(texture_coord.x, 1.f - texture_coord.y);
+            }
+            mesh._vertices.push_back(vertex);
         }
-        for (unsigned int face_index = 0; face_index < mesh->mNumFaces; face_index++)
+        for (unsigned int face_index = 0; face_index < aimesh->mNumFaces; face_index++)
         {
-            aiFace face = mesh->mFaces[face_index];
-//            push_back_all_indices(face.mIndices, face.mIndices + face.mNumIndices);
-            mesh_indices.insert(mesh_indices.end(), face.mIndices, face.mIndices + face.mNumIndices);
+            aiFace face = aimesh->mFaces[face_index];
+            mesh._indices.insert(mesh._indices.end(), face.mIndices, face.mIndices + face.mNumIndices);
         }
-        meshes.emplace_back(std::forward<std::vector<vertex>>(mesh_vertices),
-                            std::forward<std::vector<uint32_t>>(mesh_indices));
+        meshes.emplace_back(std::forward<Mesh>(mesh));
     }
 
     return *this;

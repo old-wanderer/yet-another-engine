@@ -7,21 +7,22 @@
 
 
 #include <vector>
-#include <glm/vec3.hpp>
+#include <glm/glm.hpp>
 #include "Resource.h"
+#include "Texture.h"
 
 struct vertex
 {
     glm::vec3 coordinate;
     glm::vec3 color;
+    glm::vec2 texture_coordinate;
 };
 
 class Mesh: public Resource
 {
 friend class ModelBuilder;
 public:
-
-    Mesh(std::vector<vertex> &&, std::vector<uint32_t> &&);
+    Mesh() = default;
 
     void load() override;
     void unload() override;
@@ -29,6 +30,7 @@ public:
     void draw() const;
 
 protected:
+    std::shared_ptr<Texture> _texture;
 
     std::vector<vertex> _vertices;
     std::vector<uint32_t> _indices;
