@@ -42,12 +42,25 @@ int main()
             .setProgram(shader_program2)
             .import_from_file("./resource/model/king.obj")
             .build());
+    models.emplace("rect",
+                   ModelBuilder()
+                           .setProgram(shader_program1)
+                           .begin_mesh()
+                               .push_back_vertex(glm::vec3(-0.5f, 0.0f, -0.5f), glm::vec3(.1f, .9f, .1f))
+                               .push_back_vertex(glm::vec3(-0.5f, 0.0f,  0.5f))
+                               .push_back_vertex(glm::vec3( 0.5f, 0.0f, -0.5f))
+                               .push_back_vertex(glm::vec3( 0.5f, 0.0f,  0.5f))
+                               .push_back_all_indices({ 0, 1, 2, 1, 2, 3})
+                           .end_mesh()
+                           .build()
+    );
 
     scene.emplace_object(ObjectBuilder()
                                  .model(models.get("king"))
                                  .scale(glm::vec3(.5f))
                                  .rotate(135, glm::vec3(0.f, 1.f, 0.f))
                                  .build());
+    scene.emplace_object(ObjectBuilder().model(models.get("rect")).build());
     scene.start();
     return 0;
 }

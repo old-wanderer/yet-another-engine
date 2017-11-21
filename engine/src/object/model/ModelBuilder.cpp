@@ -25,38 +25,36 @@ Model *ModelBuilder::build()
 
 ModelBuilder &ModelBuilder::push_back_all_indices(unsigned int *begin, unsigned int * end)
 {
-    ModelBuilder::indices.insert(ModelBuilder::indices.end(), begin, end);
+    building_mesh._indices.insert(building_mesh._indices.end(), begin, end);
     return *this;
 }
 
 ModelBuilder &ModelBuilder::push_back_all_indices(std::initializer_list<unsigned int> list)
 {
-    ModelBuilder::indices.insert(ModelBuilder::indices.end(), list);
+    building_mesh._indices.insert(building_mesh._indices.end(), list);
     return *this;
 }
 
 ModelBuilder &ModelBuilder::push_back_vertex(glm::vec3 coord, glm::vec3 color)
 {
-    vertices.push_back({coord, color});
+    building_mesh._vertices.push_back({coord, color});
     return *this;
 }
 
 ModelBuilder &ModelBuilder::push_back_vertex(vertex vertex)
 {
-    vertices.push_back(vertex);
+    building_mesh._vertices.push_back(vertex);
     return *this;
 }
 
-ModelBuilder &ModelBuilder::push_back_indices(unsigned int)
+ModelBuilder &ModelBuilder::push_back_indices(unsigned int index)
 {
+    building_mesh._indices.push_back(index);
     return *this;
 }
 
 ModelBuilder &ModelBuilder::import_from_file(const std::string &path)
 {
-    vertices.clear();
-    indices.clear();
-
     Assimp::Importer importer; // TODO maybe can be static
     // NOTE: если использовать unique_ptr, то свалится с ошибкой. Надо разобраться
     // auto scene = std::unique_ptr<const aiScene>(importer.ReadFile(_path_to_source, aiProcess_Triangulate | aiProcess_FlipUVs));
@@ -120,6 +118,18 @@ ModelBuilder &ModelBuilder::import_from_file(const std::string &path)
 
 ModelBuilder &ModelBuilder::set_color_vertex(unsigned int index, glm::vec3 color)
 {
-    vertices[index].color = color;
+    building_mesh._vertices[index].color = color;
+    return *this;
+}
+
+ModelBuilder &ModelBuilder::begin_mesh()
+{
+    building_mesh = Mesh();
+    return *this;
+}
+
+ModelBuilder &ModelBuilder::end_mesh()
+{
+    meshes.emplace_back(std::forward<Mesh>(building_mesh));
     return *this;
 }

@@ -16,6 +16,9 @@ class ModelBuilder
 public:
     ModelBuilder() = default;
 
+    ModelBuilder& begin_mesh();
+    ModelBuilder& end_mesh();
+
     // TODO: продумать необходимость стратегий импорта
     ModelBuilder& import_from_file(const std::string&);
     ModelBuilder& push_back_vertex(glm::vec3, glm::vec3 = glm::vec3(0.5));
@@ -29,10 +32,8 @@ public:
 
     Model* build();
 protected:
-    std::vector<vertex>       vertices;
-    std::vector<unsigned int> indices;
-
     std::vector<Mesh> meshes;
+    Mesh building_mesh;
 
     ShaderProgram* program = nullptr;
 };
