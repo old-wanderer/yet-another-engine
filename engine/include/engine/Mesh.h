@@ -18,7 +18,7 @@ struct vertex
     glm::vec2 texture_coordinate;
 };
 
-class Mesh: public Resource
+class Mesh: public Resource<>
 {
 friend class ModelBuilder;
 public:

@@ -5,6 +5,8 @@
 #ifndef YET_ANOTHER_ENGINE_UTILS_H
 #define YET_ANOTHER_ENGINE_UTILS_H
 
+#include <cassert>
+
 void dump(const void* memory, uint64_t n, uint32_t columns = 15)
 {
     auto p = reinterpret_cast<unsigned const char *>(memory);
