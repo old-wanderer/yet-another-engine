@@ -7,6 +7,7 @@
 
 
 #include <GL/glew.h>
+#include <common/Exceptions.h>
 
 class Resource
 {
