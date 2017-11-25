@@ -1,8 +1,7 @@
 #version 330 core
 
 layout (location = 0) in vec3 position;
-//layout (location = 1) in vec3 color; // ignore
-layout (location = 2) in vec2 in_texture_position;
+layout (location = 1) in vec2 in_texture_position;
 
 out vec2 texture_position;
 

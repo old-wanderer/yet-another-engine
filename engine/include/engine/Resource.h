@@ -8,14 +8,20 @@
 
 #include <GL/glew.h>
 #include <common/Exceptions.h>
+#include "Enums.h"
 
+// Пока еще не уверен в затее с LoadContext
 struct LoadContext {};
 struct PathLoadContext {
     std::string path;
 };
+// Надо наследоваться от PathLoadContext
 struct ShaderLoadContext {
     GLenum type;
     std::string path;
+};
+struct MeshLoadContext {
+    uint32_t inputs;
 };
 
 template <typename T = LoadContext>

@@ -5,7 +5,8 @@
 #ifndef YET_ANOTHER_ENGINE_ENUMS_H
 #define YET_ANOTHER_ENGINE_ENUMS_H
 
-enum ShaderInputData {
+enum ShaderInputData
+{
 
     VERTEX = 1 << 0,
 
@@ -14,7 +15,6 @@ enum ShaderInputData {
     VERTEX_TEXTURE_COORD = 1 << 2
 
 };
-
 
 
 #endif //YET_ANOTHER_ENGINE_ENUMS_H

@@ -8,6 +8,7 @@
 
 #include <vector>
 #include <glm/glm.hpp>
+#include <array>
 #include "Resource.h"
 #include "Texture.h"
 
@@ -16,13 +17,16 @@ struct vertex
     glm::vec3 coordinate;
     glm::vec3 color;
     glm::vec2 texture_coordinate;
+
+    constexpr static const std::array<size_t, 3> fields
+            = { sizeof(coordinate), sizeof(color), sizeof(texture_coordinate) };
 };
 
-class Mesh: public Resource<>
+class Mesh: public Resource<MeshLoadContext>
 {
 friend class ModelBuilder;
 public:
-    Mesh();
+    explicit Mesh(uint32_t);
 
     void load() override;
     void unload() override;

@@ -22,10 +22,9 @@ void* drop_unnecessary_data(const void* data_start,
                             uint64_t block_count,
                             size_t block_offset,
                             size_t offset_size,
-                            size_t block_size,
-                            size_t& new_data_size)
+                            size_t block_size)
 {
-    new_data_size = block_count * (block_size - offset_size);
+    size_t new_data_size = block_count * (block_size - offset_size);
     auto new_data = std::malloc(new_data_size);
     void* temp = new_data;
 

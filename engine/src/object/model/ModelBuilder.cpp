@@ -86,7 +86,17 @@ ModelBuilder &ModelBuilder::import_from_file(const std::string &path)
     for (unsigned int mesh_index = 0; mesh_index < scene->mNumMeshes; mesh_index++)
     {
         aiMesh *aimesh = scene->mMeshes[mesh_index];
-        Mesh mesh;
+        uint32_t inputs = ShaderInputData::VERTEX;
+        if (aimesh->HasVertexColors(0))
+        {
+            inputs |= ShaderInputData::VERTEX_COLOR;
+        }
+        if (aimesh->HasTextureCoords(0))
+        {
+            inputs |= ShaderInputData::VERTEX_TEXTURE_COORD;
+        }
+
+        Mesh mesh(inputs);
         if (aimesh->mMaterialIndex)
         {
             mesh._texture = textures[aimesh->mMaterialIndex - 1];
@@ -96,11 +106,11 @@ ModelBuilder &ModelBuilder::import_from_file(const std::string &path)
         {
             aiVector3D vert = aimesh->mVertices[vert_index];
             vertex vertex = { glm::vec3(vert.x, vert.y, vert.z) };
-            if (aimesh->HasVertexColors(0)) {
+            if (inputs & ShaderInputData::VERTEX_COLOR) {
                 aiColor4D color = aimesh->mColors[0][vert_index];
                 vertex.color = glm::vec3(color.r, color.g, color.b);
             }
-            if (aimesh->HasTextureCoords(0))
+            if (inputs & ShaderInputData::VERTEX_TEXTURE_COORD)
             {
                 aiVector3D texture_coord = aimesh->mTextureCoords[0][vert_index];
                 vertex.texture_coordinate = glm::vec2(texture_coord.x, 1.f - texture_coord.y);
