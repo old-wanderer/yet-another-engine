@@ -8,16 +8,18 @@
 
 #include "engine/Texture.h"
 
-Texture::Texture(std::string && path): path(path) { }
+Texture::Texture(std::string && path): Resource({path}) {}
+
+Texture::Texture(const std::string &path): Resource({path}) {}
 
 void Texture::load()
 {
     if (this->_isLoaded) return;
 
-    FILE *fp = fopen(path.c_str(), "rb");
+    FILE *fp = fopen(loadContext.path.c_str(), "rb");
     if (!fp)
     {
-        throw std::out_of_range("file not found: " + path);
+        throw std::out_of_range("file not found: " + loadContext.path);
     }
 
     uint8_t header[8];
@@ -25,7 +27,7 @@ void Texture::load()
     if (png_sig_cmp(header, 0, 8))
     {
         fclose(fp);
-        throw std::out_of_range("file (" + path + ") is not a PNG");
+        throw std::out_of_range("file (" + loadContext.path + ") is not a PNG");
     }
 
     png_structp png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
@@ -73,12 +75,10 @@ void Texture::load()
     fclose(fp);
 
     this->_isLoaded = true;
-    std::cout << "textured(" << this->_guid << "): " << path << " was loaded" << std::endl;
 }
 
 void Texture::unload()
 {
     this->_isLoaded = false;
     glDeleteTextures(1, &this->_guid);
-    std::cout << "textured(" << this->_guid << ") was unloaded" << std::endl;
 }

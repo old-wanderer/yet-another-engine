@@ -9,16 +9,12 @@
 #include <GL/glew.h>
 #include "Resource.h"
 
-class Shader final: public Resource
+class Shader final: public Resource<ShaderLoadContext>
 {
 public:
-    Shader(GLenum, const char*);
+    Shader(GLenum, std::string);
     void load() override;
     void unload() override;
-
-private:
-    GLenum _type;
-    std::string _path_to_source;
 };
 
 #endif //YET_ANOTHER_ENGINE_SHADER_HPP

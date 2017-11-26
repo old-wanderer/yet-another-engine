@@ -12,7 +12,7 @@
 #include "ShaderProgram.h"
 #include "Mesh.h"
 
-class Model: public Resource
+class Model: public Resource<>
 {
     friend class ModelBuilder;
 public:

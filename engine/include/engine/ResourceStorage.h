@@ -13,7 +13,7 @@
 template <typename T>
 class ResourceStorage final
 {
-    static_assert(std::is_base_of<Resource, T>::value, "wrong type");
+    static_assert(std::is_base_of<Resource<decltype(std::declval<T>().loadContext)>, T>::value, "wrong type");
 public:
     ResourceStorage() = default;
     virtual ~ResourceStorage() = default;

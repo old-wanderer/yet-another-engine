@@ -9,16 +9,14 @@
 #include <engine/Resource.h>
 #include <string>
 
-class Texture: public Resource
+class Texture: public Resource<PathLoadContext>
 {
 public:
+    explicit Texture(const std::string&);
     explicit Texture(std::string&&);
 
     void load() override;
     void unload() override;
-
-protected:
-    std::string path;
 };
 
 

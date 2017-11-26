@@ -13,7 +13,7 @@
 
 #include "Shader.h"
 
-class ShaderProgram: public Resource
+class ShaderProgram: public Resource<>
 {
 public:
     ShaderProgram(Shader&, Shader&);
