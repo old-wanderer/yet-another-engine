@@ -16,7 +16,7 @@ class ModelBuilder
 public:
     ModelBuilder() = default;
 
-    ModelBuilder& begin_mesh();
+    ModelBuilder& begin_mesh(uint32_t);
     ModelBuilder& end_mesh();
 
     // TODO: продумать необходимость стратегий импорта
@@ -33,7 +33,7 @@ public:
     Model* build();
 protected:
     std::vector<Mesh> meshes;
-    Mesh building_mesh;
+    Mesh building_mesh { ShaderInputData::VERTEX };
 
     ShaderProgram* program = nullptr;
 };

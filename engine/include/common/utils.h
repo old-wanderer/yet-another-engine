@@ -29,7 +29,7 @@ void* drop_unnecessary_data(const void* data_start,
     void* temp = new_data;
 
 
-    const size_t block_tail = block_size - (block_offset + block_offset);
+    const size_t block_tail = block_size - (block_offset + offset_size);
     size_t current_offset = 0;
     for (uint64_t i = 0; i < block_count; i++)
     {

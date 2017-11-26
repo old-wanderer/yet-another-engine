@@ -132,9 +132,9 @@ ModelBuilder &ModelBuilder::set_color_vertex(unsigned int index, glm::vec3 color
     return *this;
 }
 
-ModelBuilder &ModelBuilder::begin_mesh()
+ModelBuilder &ModelBuilder::begin_mesh(uint32_t inputs)
 {
-    building_mesh = Mesh();
+    building_mesh = Mesh(inputs);
     return *this;
 }
 

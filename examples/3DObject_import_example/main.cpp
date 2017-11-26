@@ -41,11 +41,12 @@ int main()
     models.emplace("king", ModelBuilder()
             .setProgram(shader_program2)
             .import_from_file("./resource/model/king.obj")
-            .build());
+            .build()
+    );
     models.emplace("rect",
                    ModelBuilder()
                            .setProgram(shader_program1)
-                           .begin_mesh()
+                           .begin_mesh(ShaderInputData::VERTEX | ShaderInputData::VERTEX_COLOR)
                                .push_back_vertex(glm::vec3(-0.5f, 0.0f, -0.5f), glm::vec3(.1f, .9f, .1f))
                                .push_back_vertex(glm::vec3(-0.5f, 0.0f,  0.5f))
                                .push_back_vertex(glm::vec3( 0.5f, 0.0f, -0.5f))
@@ -59,8 +60,15 @@ int main()
                                  .model(models.get("king"))
                                  .scale(glm::vec3(.5f))
                                  .rotate(135, glm::vec3(0.f, 1.f, 0.f))
-                                 .build());
-    scene.emplace_object(ObjectBuilder().model(models.get("rect")).build());
+                                 .build()
+    );
+    scene.emplace_object(ObjectBuilder()
+                                 .model(models.get("rect"))
+                                 .scale(glm::vec3(15))
+                                 .translate(glm::vec3(5, -2, 5))
+                                 .build()
+    );
+
     scene.start();
     return 0;
 }
