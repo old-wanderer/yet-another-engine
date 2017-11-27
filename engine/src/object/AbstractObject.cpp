@@ -2,6 +2,8 @@
 // Created by Андрей on 16.10.17.
 //
 
+#include <glm/gtc/matrix_transform.hpp>
+
 #include "engine/AbstractObject.h"
 
 AbstractObject::AbstractObject(Model &object_model, glm::mat4&& mat_model, bool mode):
@@ -14,4 +16,9 @@ void AbstractObject::draw(glm::mat4 proj_view) const
     object_model.drawModel(proj_view, this->mat_model);
     if (!polygon_mode_is_fill)
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
+
+void AbstractObject::move(glm::vec3 translate)
+{
+    mat_model = glm::translate(mat_model, translate);
 }

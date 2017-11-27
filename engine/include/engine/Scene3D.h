@@ -10,27 +10,30 @@
 
 #include "AbstractObject.h"
 #include "Camera.h"
+#include "Listener.h"
 
 #define CURRENT_SCENE3D Singleton<Scene3D>::instance()
 
 class Scene3D
 {
     friend class Singleton<Scene3D>;
-
-    typedef std::function<void(Camera&)> KeyCallback;
 public:
     void init();
     void start();
 
-    void register_key_callback(short, KeyCallback&&);
+    void register_listener(short, BaseListener *);
 
     void emplace_object(AbstractObject*);
+    // todo не очень удачное решение. Продумать концепцию с квалификаторами
+    std::shared_ptr<AbstractObject> get_object(uint32_t);
+
+    Camera& camera();
 protected:
     GLFWwindow* window;
-    std::vector<std::pair<short, std::function<void(Camera&)>>> key_handlers;
+    std::vector<std::pair<short, std::unique_ptr<BaseListener>>> listeners;
 
-    Camera camera;
-    std::vector<std::unique_ptr<AbstractObject>> objects;
+    Camera _camera;
+    std::vector<std::shared_ptr<AbstractObject>> objects;
 private:
     Scene3D();
 

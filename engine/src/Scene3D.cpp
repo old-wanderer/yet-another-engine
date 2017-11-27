@@ -11,13 +11,12 @@
 
 Scene3D::Scene3D()
 {
-    // todo подумать про захват this, возможно стоит передавать некий контекст в лямду или реализовать иначе реакцию на события
-    key_handlers.emplace_back(GLFW_KEY_ESCAPE, [this](Camera &camera) { glfwSetWindowShouldClose(this->window, GL_TRUE); });
+    register_listener(GLFW_KEY_ESCAPE, new Listener<Scene3D>(*this, [](Scene3D& scene) { glfwSetWindowShouldClose(scene.window, GL_TRUE); }));
 }
 
 void Scene3D::emplace_object(AbstractObject *object)
 {
-    objects.emplace_back(std::unique_ptr<AbstractObject>(object));
+    objects.emplace_back(std::shared_ptr<AbstractObject>(object));
 }
 
 void Scene3D::init()
@@ -60,18 +59,18 @@ void Scene3D::start()
     while (!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
-        for (auto& pair: key_handlers)
+        for (auto& pair: listeners)
         {
             if (press_keys[pair.first])
             {
-                pair.second(camera);
+                pair.second->apply();
             }
         }
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glm::mat4 trans = camera.projection_view();
+        glm::mat4 trans = _camera.projection_view();
 
         // todo что-то мне кажется, что так будет эффективнее, надо разобраться и выбрать одно
         // using namespace std::placeholders;
@@ -88,15 +87,25 @@ void Scene3D::start()
     glfwTerminate();
 }
 
-void Scene3D::register_key_callback(short key, std::function<void(Camera &)> &&handler)
+void Scene3D::register_listener(short key, BaseListener *listener)
 {
-    this->key_handlers.emplace_back(key, handler);
+    listeners.emplace_back(key, std::unique_ptr<BaseListener>(listener));
 }
 
-void Scene3D::key_callback(GLFWwindow* window, int key, int, int action, int)
+void Scene3D::key_callback(GLFWwindow*, int key, int, int action, int)
 {
     if (key >= 0 && key < 1024)
     {
         CURRENT_SCENE3D.press_keys[key] = action != GLFW_RELEASE;
     }
+}
+
+Camera &Scene3D::camera()
+{
+    return _camera;
+}
+
+std::shared_ptr<AbstractObject> Scene3D::get_object(uint32_t index)
+{
+    return objects[index];
 }

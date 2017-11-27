@@ -18,7 +18,7 @@ public:
     ResourceStorage() = default;
     virtual ~ResourceStorage() = default;
 
-    T& get(std::string key);
+    T& get(const std::string &key);
 
     template <class ...Args>
     void emplace(const std::string&, Args&& ...args);
@@ -43,7 +43,7 @@ void ResourceStorage<T>::emplace(const std::string &key, T *value)
 }
 
 template <typename T>
-T& ResourceStorage<T>::get(const std::string key)
+T& ResourceStorage<T>::get(const std::string &key)
 {
     auto point = resources.find(key);
     if (point == resources.end())

@@ -18,7 +18,9 @@ class AbstractObject
 public:
     explicit AbstractObject(Model&, glm::mat4&& = glm::mat4(1), bool = true);
     virtual ~AbstractObject() = default;
+
     void draw(glm::mat4) const;
+    void move(glm::vec3);
 
 protected:
     Model& object_model;

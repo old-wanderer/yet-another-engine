@@ -12,13 +12,13 @@ int main()
     Scene3D& scene = CURRENT_SCENE3D;
     scene.init();
 
-    scene.register_key_callback(GLFW_KEY_W, [](Camera& camera) { camera.move_z_axis( .1f); });
-    scene.register_key_callback(GLFW_KEY_S, [](Camera& camera) { camera.move_z_axis(-.1f); });
-    scene.register_key_callback(GLFW_KEY_A, [](Camera& camera) { camera.move_x_axis( .1f); });
-    scene.register_key_callback(GLFW_KEY_D, [](Camera& camera) { camera.move_x_axis(-.1f); });
-    scene.register_key_callback(GLFW_KEY_Q, [](Camera& camera) { camera.move_yaw(-2.f); });
-    scene.register_key_callback(GLFW_KEY_E, [](Camera& camera) { camera.move_yaw( 2.f); });
-    scene.register_key_callback(GLFW_KEY_Z, [](Camera& camera) { camera.move_y_axis(2.f); });
+    scene.register_listener(GLFW_KEY_W, new Listener<Camera>(scene.camera(), [](Camera& camera) { camera.move_z_axis( .1f); }));
+    scene.register_listener(GLFW_KEY_S, new Listener<Camera>(scene.camera(), [](Camera& camera) { camera.move_z_axis(-.1f); }));
+    scene.register_listener(GLFW_KEY_A, new Listener<Camera>(scene.camera(), [](Camera& camera) { camera.move_x_axis( .1f); }));
+    scene.register_listener(GLFW_KEY_D, new Listener<Camera>(scene.camera(), [](Camera& camera) { camera.move_x_axis(-.1f); }));
+    scene.register_listener(GLFW_KEY_Q, new Listener<Camera>(scene.camera(), [](Camera& camera) { camera.move_yaw(-2.f); }));
+    scene.register_listener(GLFW_KEY_E, new Listener<Camera>(scene.camera(), [](Camera& camera) { camera.move_yaw( 2.f); }));
+    scene.register_listener(GLFW_KEY_Z, new Listener<Camera>(scene.camera(), [](Camera& camera) { camera.move_y_axis(2.f); }));
 
     ResourceStorage<Shader> storage;
     storage.emplace("s_vert", GL_VERTEX_SHADER,   "./resource/shader/vertex.glsl");
@@ -68,6 +68,11 @@ int main()
                                  .translate(glm::vec3(5, -2, 5))
                                  .build()
     );
+
+    auto king = scene.get_object(0);
+    typedef decltype(king) king_t;
+    scene.register_listener(GLFW_KEY_UP,   new Listener<king_t>(king, [](king_t& king) { king->move(glm::vec3(.0f,  2.f, .0f)); }));
+    scene.register_listener(GLFW_KEY_DOWN, new Listener<king_t>(king, [](king_t& king) { king->move(glm::vec3(.0f, -.2f, .0f)); }));
 
     scene.start();
     return 0;
