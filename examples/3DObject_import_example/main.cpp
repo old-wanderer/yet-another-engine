@@ -38,10 +38,11 @@ int main()
     shader_program2.load();
 
     ResourceStorage<Model> models;
-    models.emplace("king", ModelBuilder()
-            .setProgram(shader_program2)
-            .import_from_file("./resource/model/king.obj")
-            .build()
+    models.emplace("king",
+                   ModelBuilder()
+                           .setProgram(shader_program2)
+                           .import_from_file("./resource/model/king.obj")
+                           .build()
     );
     models.emplace("rect",
                    ModelBuilder()
@@ -71,7 +72,7 @@ int main()
 
     auto king = scene.get_object(0);
     typedef decltype(king) king_t;
-    scene.register_listener(GLFW_KEY_UP,   new Listener<king_t>(king, [](king_t& king) { king->move(glm::vec3(.0f,  2.f, .0f)); }));
+    scene.register_listener(GLFW_KEY_UP,   new Listener<king_t>(king, [](king_t& king) { king->move(glm::vec3(.0f,  .2f, .0f)); }));
     scene.register_listener(GLFW_KEY_DOWN, new Listener<king_t>(king, [](king_t& king) { king->move(glm::vec3(.0f, -.2f, .0f)); }));
 
     scene.start();

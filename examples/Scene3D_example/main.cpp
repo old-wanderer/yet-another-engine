@@ -6,22 +6,19 @@
 #include <iostream>
 #include <engine/Scene3D.h>
 #include <engine/ResourceStorage.h>
-#include <engine/Texture.h>
 #include <engine/ModelBuilder.h>
-#include <engine/TexturedModel.h>
 #include <engine/ObjectBuilder.h>
 
 int main() {
     Scene3D& scene = CURRENT_SCENE3D;
     scene.init();
 
-    scene.register_key_callback(GLFW_KEY_W, [](Camera& camera) { camera.move_z_axis( .1f); });
-    scene.register_key_callback(GLFW_KEY_S, [](Camera& camera) { camera.move_z_axis(-.1f); });
-    scene.register_key_callback(GLFW_KEY_A, [](Camera& camera) { camera.move_x_axis( .1f); });
-    scene.register_key_callback(GLFW_KEY_D, [](Camera& camera) { camera.move_x_axis(-.1f); });
-    scene.register_key_callback(GLFW_KEY_Q, [](Camera& camera) { camera.move_yaw(-2.f); });
-    scene.register_key_callback(GLFW_KEY_E, [](Camera& camera) { camera.move_yaw( 2.f); });
-    scene.register_key_callback(GLFW_KEY_Z, [](Camera& camera) { camera.move_y_axis(2.f); });
+    scene.register_listener(GLFW_KEY_W, new Listener<Camera>(scene.camera(), [](Camera& camera) { camera.move_z_axis( .1f); }));
+    scene.register_listener(GLFW_KEY_S, new Listener<Camera>(scene.camera(), [](Camera& camera) { camera.move_z_axis(-.1f); }));
+    scene.register_listener(GLFW_KEY_A, new Listener<Camera>(scene.camera(), [](Camera& camera) { camera.move_x_axis( .1f); }));
+    scene.register_listener(GLFW_KEY_D, new Listener<Camera>(scene.camera(), [](Camera& camera) { camera.move_x_axis(-.1f); }));
+    scene.register_listener(GLFW_KEY_Q, new Listener<Camera>(scene.camera(), [](Camera& camera) { camera.move_yaw(-2.f); }));
+    scene.register_listener(GLFW_KEY_E, new Listener<Camera>(scene.camera(), [](Camera& camera) { camera.move_yaw( 2.f); }));
 
     ResourceStorage<Shader> storage;
     storage.emplace("s_vert", GL_VERTEX_SHADER,   "./resource/shader/vertex.glsl");
@@ -42,7 +39,7 @@ int main() {
 
     ResourceStorage<Texture> textures;
     textures.emplace("bricks", "./resource/texture/bricks.png");
-    textures.emplace("illuminati", "./resource/texture/test1.png");
+    textures.emplace("illuminati", "./resource/texture/illuminati.png");
 
     ResourceStorage<Model> models;
     models.emplace("ball",
@@ -55,21 +52,47 @@ int main() {
                    ModelBuilder()
                            .setProgram(shader_program1)
                            .import_from_file("./resource/model/cube-purple.dae")
-                           .set_color_vertex(1, glm::vec3(.1f, 1.f, .1f))
+//                           .set_color_vertex(1, glm::vec3(.1f, 1.f, .1f))
                            .build()
     );
     models.emplace("rect",
                    ModelBuilder()
                            .setProgram(shader_program1)
-                           .push_back_vertex(glm::vec3(-0.5f, 0.0f, -0.5f), glm::vec3(.1f, .9f, .1f))
-                           .push_back_vertex(glm::vec3(-0.5f, 0.0f,  0.5f))
-                           .push_back_vertex(glm::vec3( 0.5f, 0.0f, -0.5f))
-                           .push_back_vertex(glm::vec3( 0.5f, 0.0f,  0.5f))
-                           .push_back_all_indices({ 0, 1, 2, 1, 2, 3})
+                           .begin_mesh(ShaderInputData::VERTEX | ShaderInputData::VERTEX_COLOR)
+                               .push_back_vertex(glm::vec3(-0.5f, 0.0f, -0.5f), glm::vec3(.1f, .9f, .1f))
+                               .push_back_vertex(glm::vec3(-0.5f, 0.0f,  0.5f))
+                               .push_back_vertex(glm::vec3( 0.5f, 0.0f, -0.5f))
+                               .push_back_vertex(glm::vec3( 0.5f, 0.0f,  0.5f))
+                               .push_back_all_indices({ 0, 1, 2, 1, 2, 3})
+                           .end_mesh()
                            .build()
     );
-    models.emplace("bricks", static_cast<Model*>(new TexturedModel(shader_program2, textures.get("bricks"))));
-    models.emplace("illuminati", static_cast<Model*>(new TexturedModel(shader_program2, textures.get("illuminati"))));
+    models.emplace("bricks",
+                   ModelBuilder()
+                           .setProgram(shader_program2) // NOTE: почему часть функций CamelCase, а часть underscore
+                           .begin_mesh(ShaderInputData::VERTEX | ShaderInputData::VERTEX_TEXTURE_COORD)
+                               .set_texture(&textures.get("bricks"))
+                               .emplace_back_vertex(glm::vec3( 0.5f,  0.5f, 0.0f), glm::vec3(), glm::vec2(5.0f, 5.0f))
+                               .emplace_back_vertex(glm::vec3( 0.5f, -0.5f, 0.0f), glm::vec3(), glm::vec2(5.0f, 0.0f))
+                               .emplace_back_vertex(glm::vec3(-0.5f, -0.5f, 0.0f), glm::vec3(), glm::vec2(0.0f, 0.0f))
+                               .emplace_back_vertex(glm::vec3(-0.5f,  0.5f, 0.0f), glm::vec3(), glm::vec2(0.0f, 5.0f))
+                               .push_back_all_indices({ 0, 1, 3, 1, 2, 3 })
+                           .end_mesh()
+                           .build()
+    );
+    models.emplace("illuminati",
+                   ModelBuilder()
+                           .setProgram(shader_program2)
+                           .begin_mesh(ShaderInputData::VERTEX | ShaderInputData::VERTEX_TEXTURE_COORD)
+                               .set_texture(&textures.get("illuminati"))
+                               .emplace_back_vertex(glm::vec3( 0.5f,  0.5f, 0.0f), glm::vec3(), glm::vec2(5.0f, 5.0f))
+                               .emplace_back_vertex(glm::vec3( 0.5f, -0.5f, 0.0f), glm::vec3(), glm::vec2(5.0f, 0.0f))
+                               .emplace_back_vertex(glm::vec3(-0.5f, -0.5f, 0.0f), glm::vec3(), glm::vec2(0.0f, 0.0f))
+                               .emplace_back_vertex(glm::vec3(-0.5f,  0.5f, 0.0f), glm::vec3(), glm::vec2(0.0f, 5.0f))
+                               .push_back_all_indices({ 0, 1, 3, 1, 2, 3 })
+                           .end_mesh()
+                           .build()
+    );
 
     scene.emplace_object(new AbstractObject(models.get("rect"), glm::scale(
             glm::translate(glm::mat4(1), glm::vec3(5, -2, 5)),

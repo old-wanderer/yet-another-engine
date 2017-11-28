@@ -41,7 +41,7 @@ ModelBuilder &ModelBuilder::push_back_vertex(glm::vec3 coord, glm::vec3 color)
     return *this;
 }
 
-ModelBuilder &ModelBuilder::push_back_vertex(vertex vertex)
+ModelBuilder &ModelBuilder::push_back_vertex(vertex& vertex)
 {
     building_mesh._vertices.push_back(vertex);
     return *this;
@@ -141,5 +141,18 @@ ModelBuilder &ModelBuilder::begin_mesh(uint32_t inputs)
 ModelBuilder &ModelBuilder::end_mesh()
 {
     meshes.emplace_back(std::forward<Mesh>(building_mesh));
+    return *this;
+}
+
+ModelBuilder &ModelBuilder::set_texture(Texture *texture)
+{
+    // todo нужно разобраться с shared_ptr и указателем
+    building_mesh._texture.reset(texture);
+    return *this;
+}
+
+ModelBuilder &ModelBuilder::emplace_back_vertex(glm::vec3 &&coord, glm::vec3 &&color, glm::vec2 &&texture_coord)
+{
+    building_mesh._vertices.push_back({coord, color, texture_coord});
     return *this;
 }
